@@ -11,15 +11,14 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Users", href: "#", current: false },
-  { name: "Rooms", href: "#", current: false },
-  { name: "Cleaners", href: "#", current: false },
-  { name: "Reports", href: "#", current: false },
+  { name: "Dashboard", href: "/", current: true },
+  { name: "Checkers", href: "/checker-list", current: false },
+  { name: "Rooms", href: "/rooms-list", current: false },
+  { name: "Cleaners", href: "/cleaners-list", current: false },
+  // { name: "Reports", href: "#", current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
 ];
 
