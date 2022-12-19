@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "../../image/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const user = {
   name: "Tom Cook",
@@ -10,26 +10,22 @@ const user = {
   imageUrl:
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
-const navigation = [
-  { name: "Dashboard", href: "/", current: true },
-  { name: "Checkers", href: "/checker-list", current: false },
-  { name: "Rooms", href: "/rooms-list", current: false },
-  { name: "Cleaners", href: "/cleaners-list", current: false },
-  // { name: "Reports", href: "#", current: false },
-];
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Sign out", href: "#" },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Navigation() {
+  const navigate = useNavigate();
+  const Role = localStorage.getItem("Role");
+  const userNavigation = [
+    { name: "Your Profile", href: "#" },
+    { name: "Sign out", href: "#" },
+  ];
+
   return (
     <>
-      <div className="min-h-full">
+      <div className="min-h-full w-full">
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>
@@ -40,38 +36,54 @@ export default function Navigation() {
                       <img width={150} src={Logo} alt="The Checker App" />
                     </div>
                     <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
+                      {Role === "SuperAdmin" ? (
+                        <div className="ml-10 flex items-baseline space-x-4">
                           <Link
-                            onClick={() => {
-                                
-                            }}
-                            key={item.name}
-                            to={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                              "px-3 py-2 rounded-md text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={"/"}
                           >
-                            {item.name}
+                            Dashboard
                           </Link>
-                        ))}
-                      </div>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={'/hotels'}
+                          >
+                            Hotels
+                          </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={'/companies'}
+                          >
+                            Companies
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className="ml-10 flex items-baseline space-x-4">
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={'/panels'}
+                            onClick={() => {}}
+                          >
+                            Panel
+                          </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            onClick={() => {}}
+                          >
+                            My Checkers
+                          </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            onClick={() => {}}
+                          >
+                            My Cleaners
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
-
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
@@ -135,7 +147,7 @@ export default function Navigation() {
               </div>
 
               <Disclosure.Panel className="md:hidden">
-                <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
+                {/* <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
                   {navigation.map((item) => (
                     <Disclosure.Button
                       key={item.name}
@@ -152,7 +164,7 @@ export default function Navigation() {
                       {item.name}
                     </Disclosure.Button>
                   ))}
-                </div>
+                </div> */}
                 <div className="border-t border-gray-700 pt-4 pb-3">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
