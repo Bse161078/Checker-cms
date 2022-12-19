@@ -10,18 +10,22 @@ import Navigation from "../../components/Navigation";
 const HotelsList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCleanerModalOpen, setIsCleanerModalOpen] = useState(false);
+  const [isReceptionModalOpen, setIsReceptionModalOpen] = useState(false);
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
   const [hotelID, setHotelID] = useState();
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [CleaneFullName, setCleanerFullName] = useState();
+  const [CleanerFullName, setCleanerFullName] = useState();
   const [CleanerUsername, setCleanerUserName] = useState();
   const [CleanerPassword, setCleanerPassword] = useState();
   const [CleanerSalary, setCleanerSalary] = useState();
   const [CleanerRoomCount, setCleanerRoomCountForClean] = useState();
-
+  const [ReceptionFullName, setReception] = useState();
+  const [ReceptionUsername, setReceptionUserName] = useState();
+  const [ReceptionPassword, setReceptionPassword] = useState();
+  
   const columns = [
     {
       title: "Username",
@@ -72,7 +76,7 @@ const HotelsList = () => {
           <button
             className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
             onClick={() => {
-              //   handleDelete(_id)
+              setIsReceptionModalOpen(true)
             }}
           >
             Create Reception
@@ -84,7 +88,7 @@ const HotelsList = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${BASEURL}/user/${id}`, {
+      .delete(`${BASEURL}/hotel/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -114,7 +118,7 @@ const HotelsList = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/checker`,
+        `${BASEURL}/hotel/create-hotel-checker`,
         {
           fullname: fullName,
           username: username,
@@ -152,9 +156,9 @@ const HotelsList = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/cleaner`,
+        `${BASEURL}/hotel/create-hotel-cleaner`,
         {
-          fullname: CleaneFullName,
+          fullname: CleanerFullName,
           username: CleanerUsername,
           password: CleanerPassword,
           salaryPerRoom: CleanerSalary,
@@ -188,23 +192,61 @@ const HotelsList = () => {
       });
   };
 
+  const CreateReception = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${BASEURL}/hotel/create-hotel-reception`,
+        {
+          fullname: ReceptionFullName,
+          username: ReceptionUsername,
+          password: ReceptionPassword,
+          hotel: hotelID,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
+        }
+      )
+      .then((res) => {
+        toast("Created Successfully!", {
+          icon: "👏",
+          style: {
+            borderRadius: "4px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        setLoading(false);
+        setIsModalOpen(false);
+        window.setTimeout(function () {
+          location.reload();
+        }, 1500);
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.error?.message);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
-    getUsers();
+    getHotels();
   }, []);
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const getUsers = () => {
+  const getHotels = () => {
     axios
-      .get(`${BASEURL}/user`, {
+      .get(`${BASEURL}/hotel`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data);
+        setUsers(response?.data?.data?.hotels);
       });
   };
 
@@ -356,6 +398,64 @@ const HotelsList = () => {
               onChange={(e) => {
                 setCleanerRoomCountForClean(e.target.value);
               }}
+            />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Create Reception"
+        open={isReceptionModalOpen}
+        onCancel={() => {
+          setIsReceptionModalOpen(false);
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setIsReceptionModalOpen(false);
+            }}
+          >
+            Return
+          </Button>,
+          <Button
+            className="bg-blue-400 text-white hover:bg-white"
+            key="link"
+            loading={loading}
+            onClick={CreateReception}
+          >
+            Create
+          </Button>,
+        ]}
+      >
+        <div className="flex flex-col justify-center items-center gap-y-4">
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Full Name</label>
+            <Input
+              onChange={(e) => {
+                setReception(e.target.value);
+              }}
+              placeholder="jack grilish"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">User Name</label>
+            <Input
+              onChange={(e) => {
+                setReceptionUserName(e.target.value);
+              }}
+              placeholder="thisisjack"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Password</label>
+            <Input.Password
+              onChange={(e) => {
+                setReceptionPassword(e.target.value);
+              }}
+              placeholder="input password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
             />
           </div>
         </div>

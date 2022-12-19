@@ -10,6 +10,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -17,10 +18,12 @@ const Home = () => {
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [role, setRole] = useState();
   const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
-
+  const [CompanyfullName, setCompanyFullName] = useState();
+  const [Companyusername, setCompanyUserName] = useState();
+  const [Companypassword, setCompanyPassword] = useState();
+  const [Companyemail, setCompanyEmail] = useState();
+  const navigate = useNavigate();
   const columns = [
     {
       title: "Username",
@@ -41,11 +44,16 @@ const Home = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, {_id}) => (
+      render: (_, { _id }) => (
         <Space>
-          <button className="bg-red-100 text-red-500 px-2 py-2 rounded-md" onClick={() => {
-            handleDelete(_id)
-          }}>Delete</button>
+          <button
+            className="bg-red-100 text-red-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              handleDelete(_id);
+            }}
+          >
+            Delete
+          </button>
         </Space>
       ),
     },
@@ -53,51 +61,49 @@ const Home = () => {
 
   const handleDelete = (id) => {
     axios
-    .delete(`${BASEURL}/user/${id}`, {
-      headers: {
-        Authorization: `Bearer ${Token}`,
-      },
-    })
-    .then((response) => {
-      toast("delete successfully", {
-        icon: "👏",
-        style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff",
-        },
-      });
-      window.setTimeout(function () {
-        location.reload();
-      }, 1500);
-    })
-    .catch(function (error) {
-      console.log(error);
-      toast.error(error.response.data.errors.title);
-    });
-  }
-
-  const Token = localStorage.getItem("Token");
-
-  const handleChange = (value) => {
-    setRole(value);
-  };
-
-  const CreateUserHandler = () => {
-    setLoading(true);
-    axios
-      .post(`${BASEURL}/user`, {
-        fullname: fullName,
-        username: username,
-        password: password,
-        role: role,
-        email: email,
-        mobile: phone,
-      }, {
+      .delete(`${BASEURL}/user/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
+      .then((response) => {
+        toast("delete successfully", {
+          icon: "👏",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        window.setTimeout(function () {
+          location.reload();
+        }, 1500);
+      })
+      .catch(function (error) {
+        console.log(error);
+        toast.error(error.response.data.errors.title);
+      });
+  };
+
+  const Token = localStorage.getItem("Token");
+
+  const CreateHotelUserHandler = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${BASEURL}/hotel`,
+        {
+          fullname: fullName,
+          username: username,
+          password: password,
+          email: email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
+        }
+      )
       .then((res) => {
         toast("Created Successfully!", {
           icon: "👏",
@@ -119,7 +125,64 @@ const Home = () => {
       });
   };
 
+  const CreateCompanyUserHandler = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${BASEURL}/hotel`,
+        {
+          fullname: CompanyfullName,
+          username: Companyusername,
+          password: Companypassword,
+          email: Companyemail,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
+        }
+      )
+      .then((res) => {
+        toast("Created Successfully!", {
+          icon: "👏",
+          style: {
+            borderRadius: "4px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        setLoading(false);
+        setIsModalOpen(false);
+        window.setTimeout(function () {
+          location.reload();
+        }, 1500);
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.error?.message);
+        setLoading(false);
+      });
+  };
+
+  const IsImLoggedIn = () => {
+    axios
+      .get(`${BASEURL}/auth/check-login`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.statusCode === 200) {
+          navigate('/')
+        } else {
+          navigate('/login')
+        }
+      }).catch((err) => {
+        navigate('/login')
+      });
+  };
+
   useEffect(() => {
+    IsImLoggedIn()
     getUsers();
   }, []);
 
@@ -159,12 +222,22 @@ const Home = () => {
       >
         <div className="w-full flex justify-between items-center">
           <h2 className="text-2xl text-black font-medium">User List</h2>
-          <button
-            onClick={showModal}
-            className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
-          >
-            Create User
-          </button>
+          <div className="flex justify-center items-center gap-x-4">
+            <button
+              onClick={showModal}
+              className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
+            >
+              Create Hotel
+            </button>
+            <button
+              onClick={() => {
+                setIsCompanyModalOpen(true);
+              }}
+              className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
+            >
+              Create Company
+            </button>
+          </div>
         </div>
         <Table className="w-full" dataSource={users} columns={columns} />
       </section>
@@ -181,7 +254,7 @@ const Home = () => {
             className="bg-blue-400 text-white hover:bg-white"
             key="link"
             loading={loading}
-            onClick={CreateUserHandler}
+            onClick={CreateHotelUserHandler}
           >
             Create
           </Button>,
@@ -227,33 +300,69 @@ const Home = () => {
               placeholder="sample@gmail.com"
             />
           </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Create Company"
+        open={isCompanyModalOpen}
+        onOk={handleOk}
+        onCancel={() => {
+          setIsCompanyModalOpen(false)
+        }}
+        footer={[
+          <Button key="back" onClick={() => {
+            setIsCompanyModalOpen(false)
+          }}>
+            Return
+          </Button>,
+          <Button
+            className="bg-blue-400 text-white hover:bg-white"
+            key="link"
+            loading={loading}
+            onClick={CreateHotelUserHandler}
+          >
+            Create
+          </Button>,
+        ]}
+      >
+        <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Role</label>
-            <Select
-              defaultValue="select"
-              style={{
-                width: 120,
+            <label className="w-full text-left font-semibold">Full Name</label>
+            <Input
+              onChange={(e) => {
+                setFullName(e.target.value);
               }}
-              onChange={handleChange}
-              options={[
-                {
-                  value: "HotelAdmin",
-                  label: "Hotel Admin",
-                },
-                {
-                  value: "CompanyAdmin",
-                  label: "Company Admin",
-                },
-              ]}
+              placeholder="jack grilish"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Phone</label>
+            <label className="w-full text-left font-semibold">User Name</label>
             <Input
               onChange={(e) => {
-                setPhone(e.target.value);
+                setUserName(e.target.value);
               }}
-              placeholder="+41503243232"
+              placeholder="thisisjack"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Password</label>
+            <Input.Password
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              placeholder="input password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Email</label>
+            <Input
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              placeholder="sample@gmail.com"
             />
           </div>
         </div>

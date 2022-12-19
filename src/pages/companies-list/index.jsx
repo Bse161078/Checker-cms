@@ -69,14 +69,6 @@ const CompaniesList = () => {
           >
             Create Cleaner
           </button>
-          <button
-            className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
-            onClick={() => {
-              //   handleDelete(_id)
-            }}
-          >
-            Create Reception
-          </button>
         </Space>
       ),
     },
@@ -84,7 +76,7 @@ const CompaniesList = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${BASEURL}/user/${id}`, {
+      .delete(`${BASEURL}/company/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -114,7 +106,7 @@ const CompaniesList = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/checker`,
+        `${BASEURL}/company/create-company-checker`,
         {
           fullname: fullName,
           username: username,
@@ -152,7 +144,7 @@ const CompaniesList = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/cleaner`,
+        `${BASEURL}/company/create-company-cleaner`,
         {
           fullname: CleaneFullName,
           username: CleanerUsername,
@@ -198,13 +190,13 @@ const CompaniesList = () => {
 
   const getUsers = () => {
     axios
-      .get(`${BASEURL}/user`, {
+      .get(`${BASEURL}/company`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data);
+        setUsers(response?.data?.data?.companies);
       });
   };
 
@@ -217,7 +209,7 @@ const CompaniesList = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">Hotel List</h2>
+          <h2 className="text-2xl text-black font-medium">Company List</h2>
           {/* <button
                 onClick={showModal}
                 className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"

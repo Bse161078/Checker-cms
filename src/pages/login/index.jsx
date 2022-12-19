@@ -17,8 +17,8 @@ const Login = () => {
         password: values.password,
       })
       .then((res) => {
-        localStorage.setItem("Token", res?.data?.data?.accessToken);
-        localStorage.setItem("Role", res?.data?.data?.role);
+        localStorage.setItem("Token", res?.data?.data?.loginResult?.accessToken);
+        localStorage.setItem("Role", res?.data?.data?.loginResult?.role);
         toast("Login Successfull!", {
           icon: "👏",
           style: {
@@ -27,9 +27,9 @@ const Login = () => {
             color: "#fff",
           },
         });
-        if (res?.data?.data?.role === 'SuperAdmin') {
+        if (res?.data?.data?.loginResult?.role === 'SuperAdmin') {
           navigate('/')
-        } else if (res?.data?.data?.role === 'HotelAdmin') {
+        } else if (res?.data?.data?.loginResult?.role === 'HotelAdmin') {
           navigate('/my-hotel')
         }
         setLoading(false);
