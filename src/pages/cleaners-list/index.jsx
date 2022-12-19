@@ -1,29 +1,32 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect, useState } from "react";
-import { Space, Table, Tag, Modal, Button, Input, Select } from "antd";
+import { Space, Table, Tag, Modal, Button, Input, Select, InputNumber } from "antd";
 import axios from "axios";
 import { BASEURL } from "../../constants";
-import Navigation from "../Navigation";
+import Navigation from "../../components/Navigation";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
-const Home = () => {
+const Cleaners = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
+  const [isCleanerModalOpen, setIsCleanerModalOpen] = useState(false);
+  const [isReceptionModalOpen, setIsReceptionModalOpen] = useState(false);
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-
+  const [hotelID, setHotelID] = useState();
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [email, setEmail] = useState();
-  const [CompanyfullName, setCompanyFullName] = useState();
-  const [Companyusername, setCompanyUserName] = useState();
-  const [Companypassword, setCompanyPassword] = useState();
-  const [Companyemail, setCompanyEmail] = useState();
-  const navigate = useNavigate();
+  const [CleanerFullName, setCleanerFullName] = useState();
+  const [CleanerUsername, setCleanerUserName] = useState();
+  const [CleanerPassword, setCleanerPassword] = useState();
+  const [CleanerSalary, setCleanerSalary] = useState();
+  const [CleanerRoomCount, setCleanerRoomCountForClean] = useState();
+  const [ReceptionFullName, setReception] = useState();
+  const [ReceptionUsername, setReceptionUserName] = useState();
+  const [ReceptionPassword, setReceptionPassword] = useState();
+
   const columns = [
     {
       title: "Username",
@@ -54,6 +57,31 @@ const Home = () => {
           >
             Delete
           </button>
+          <button
+            className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              setIsModalOpen(true);
+              setHotelID(_id);
+            }}
+          >
+            Create Checker
+          </button>
+          <button
+            className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              setIsCleanerModalOpen(true);
+            }}
+          >
+            Create Cleaner
+          </button>
+          <button
+            className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              setIsReceptionModalOpen(true);
+            }}
+          >
+            Create Reception
+          </button>
         </Space>
       ),
     },
@@ -61,7 +89,7 @@ const Home = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${BASEURL}/user/${id}`, {
+      .delete(`${BASEURL}/hotel/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -87,16 +115,16 @@ const Home = () => {
 
   const Token = localStorage.getItem("Token");
 
-  const CreateHotelUserHandler = () => {
+  const CreateChecker = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/hotel`,
+        `${BASEURL}/hotel/create-hotel-checker`,
         {
           fullname: fullName,
           username: username,
           password: password,
-          email: email,
+          hotelID: hotelID,
         },
         {
           headers: {
@@ -125,16 +153,18 @@ const Home = () => {
       });
   };
 
-  const CreateCompanyUserHandler = () => {
+  const CreateCleaner = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/company`,
+        `${BASEURL}/hotel/create-hotel-cleaner`,
         {
-          fullname: CompanyfullName,
-          username: Companyusername,
-          password: Companypassword,
-          email: Companyemail,
+          fullname: CleanerFullName,
+          username: CleanerUsername,
+          password: CleanerPassword,
+          salaryPerRoom: CleanerSalary,
+          roomCountForCleanEachDay: CleanerRoomCount,
+          hotelID: hotelID,
         },
         {
           headers: {
@@ -152,7 +182,7 @@ const Home = () => {
           },
         });
         setLoading(false);
-        setIsCompanyModalOpen(false);
+        setIsModalOpen(false);
         window.setTimeout(function () {
           location.reload();
         }, 1500);
@@ -163,52 +193,61 @@ const Home = () => {
       });
   };
 
-  const IsImLoggedIn = () => {
+  const CreateReception = () => {
+    setLoading(true);
     axios
-      .get(`${BASEURL}/auth/check-login`, {
-        headers: {
-          Authorization: `Bearer ${Token}`,
+      .post(
+        `${BASEURL}/hotel/create-hotel-reception`,
+        {
+          fullname: ReceptionFullName,
+          username: ReceptionUsername,
+          password: ReceptionPassword,
+          hotel: hotelID,
         },
-      })
-      .then((response) => {
-        if (response?.data?.statusCode === 200 || 201) {
-          navigate('/')
-        } else {
-          navigate('/login')
+        {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
         }
-      }).catch((err) => {
-        navigate('/login')
+      )
+      .then((res) => {
+        toast("Created Successfully!", {
+          icon: "👏",
+          style: {
+            borderRadius: "4px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        setLoading(false);
+        setIsModalOpen(false);
+        window.setTimeout(function () {
+          location.reload();
+        }, 1500);
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.error?.message);
+        setLoading(false);
       });
   };
 
   useEffect(() => {
-    IsImLoggedIn()
-    getUsers();
+    getCleaners();
   }, []);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setOpen(false);
-    }, 3000);
-  };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const getUsers = () => {
+  const getCleaners = () => {
     axios
-      .get(`${BASEURL}/user`, {
+      .get(`${BASEURL}/cleaner`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data);
+        setUsers(response?.data?.data?.cleaner);
       });
   };
 
@@ -221,30 +260,19 @@ const Home = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">User List</h2>
-          <div className="flex justify-center items-center gap-x-4">
-            <button
+          <h2 className="text-2xl text-black font-medium">Cleaners List</h2>
+          {/* <button
               onClick={showModal}
               className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
             >
-              Create Hotel
-            </button>
-            <button
-              onClick={() => {
-                setIsCompanyModalOpen(true);
-              }}
-              className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
-            >
-              Create Company
-            </button>
-          </div>
+              Create User
+            </button> */}
         </div>
         <Table className="w-full" dataSource={users} columns={columns} />
       </section>
       <Modal
-        title="Create User"
+        title="Create Checker"
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
@@ -254,7 +282,7 @@ const Home = () => {
             className="bg-blue-400 text-white hover:bg-white"
             key="link"
             loading={loading}
-            onClick={CreateHotelUserHandler}
+            onClick={CreateChecker}
           >
             Create
           </Button>,
@@ -291,35 +319,28 @@ const Home = () => {
               }
             />
           </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Email</label>
-            <Input
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              placeholder="sample@gmail.com"
-            />
-          </div>
         </div>
       </Modal>
       <Modal
-        title="Create Company"
-        open={isCompanyModalOpen}
-        onOk={handleOk}
+        title="Create Cleaner"
+        open={isCleanerModalOpen}
         onCancel={() => {
-          setIsCompanyModalOpen(false)
+          setIsCleanerModalOpen(false);
         }}
         footer={[
-          <Button key="back" onClick={() => {
-            setIsCompanyModalOpen(false)
-          }}>
+          <Button
+            key="back"
+            onClick={() => {
+              setIsCleanerModalOpen(false);
+            }}
+          >
             Return
           </Button>,
           <Button
             className="bg-blue-400 text-white hover:bg-white"
             key="link"
             loading={loading}
-            onClick={CreateCompanyUserHandler}
+            onClick={CreateCleaner}
           >
             Create
           </Button>,
@@ -330,7 +351,7 @@ const Home = () => {
             <label className="w-full text-left font-semibold">Full Name</label>
             <Input
               onChange={(e) => {
-                setCompanyFullName(e.target.value);
+                setCleanerFullName(e.target.value);
               }}
               placeholder="jack grilish"
             />
@@ -339,7 +360,7 @@ const Home = () => {
             <label className="w-full text-left font-semibold">User Name</label>
             <Input
               onChange={(e) => {
-                setCompanyUserName(e.target.value);
+                setCleanerUserName(e.target.value);
               }}
               placeholder="thisisjack"
             />
@@ -348,7 +369,7 @@ const Home = () => {
             <label className="w-full text-left font-semibold">Password</label>
             <Input.Password
               onChange={(e) => {
-                setCompanyPassword(e.target.value);
+                setCleanerPassword(e.target.value);
               }}
               placeholder="input password"
               iconRender={(visible) =>
@@ -357,12 +378,85 @@ const Home = () => {
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Email</label>
+            <label className="w-full text-left font-semibold">
+              Salary Per Room
+            </label>
+            <InputNumber
+              min={1}
+              defaultValue={1}
+              onChange={(e) => {
+                setCleanerSalary(e.target.value);
+              }}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Rooms He Should Clean Per Day
+            </label>
+            <InputNumber
+              min={1}
+              defaultValue={1}
+              onChange={(e) => {
+                setCleanerRoomCountForClean(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Create Reception"
+        open={isReceptionModalOpen}
+        onCancel={() => {
+          setIsReceptionModalOpen(false);
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setIsReceptionModalOpen(false);
+            }}
+          >
+            Return
+          </Button>,
+          <Button
+            className="bg-blue-400 text-white hover:bg-white"
+            key="link"
+            loading={loading}
+            onClick={CreateReception}
+          >
+            Create
+          </Button>,
+        ]}
+      >
+        <div className="flex flex-col justify-center items-center gap-y-4">
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Full Name</label>
             <Input
               onChange={(e) => {
-                setCompanyEmail(e.target.value);
+                setReception(e.target.value);
               }}
-              placeholder="sample@gmail.com"
+              placeholder="jack grilish"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">User Name</label>
+            <Input
+              onChange={(e) => {
+                setReceptionUserName(e.target.value);
+              }}
+              placeholder="thisisjack"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Password</label>
+            <Input.Password
+              onChange={(e) => {
+                setReceptionPassword(e.target.value);
+              }}
+              placeholder="input password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
             />
           </div>
         </div>
@@ -371,4 +465,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Cleaners;
