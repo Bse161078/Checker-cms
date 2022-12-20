@@ -1,27 +1,11 @@
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Disclosure } from "@headlessui/react";
 import Logo from "../../image/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function Navigation() {
+export default function NavigationSecond() {
   const navigate = useNavigate();
   const Role = localStorage.getItem("Role");
-  const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    { name: "Sign out", href: "#" },
-  ];
 
   return (
     <>
@@ -36,7 +20,7 @@ export default function Navigation() {
                       <img width={150} src={Logo} alt="The Checker App" />
                     </div>
                     <div className="hidden md:block">
-                      {Role === "SuperAdmin" ? (
+                      {Role === "CompanyAdmin" ? (
                         <div className="ml-10 flex items-baseline space-x-4">
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"

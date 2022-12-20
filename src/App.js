@@ -4,7 +4,10 @@ import Home from './components/Home';
 import Login from './pages/login';
 import HotelsList from './pages/hotels-list';
 import CompaniesList from './pages/companies-list';
-import Cleaners from './pages/cleaners-list';
+import Cleaners from './pages/my-cleaners';
+import MyCheckers from './pages/my-checkers';
+import Panel from './pages/panel';
+import Levels from './pages/levels';
 
 function App() {
   return (
@@ -14,6 +17,11 @@ function App() {
         <Route path="/hotels" element={<HotelsList />} />
         <Route path="/companies" element={<CompaniesList />} />
         <Route path="/cleaners" element={<Cleaners />} />
+        <Route path="/checkers" element={<MyCheckers />} />
+        <Route path="/rooms" element={<Panel />} />
+        <Route path="/levels" element={<Levels />} />
+        <Route path="/companycheckers" element={<MyCheckers />} />
+        <Route path="/companycleaners" element={<Cleaners />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </div>
