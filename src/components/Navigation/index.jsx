@@ -70,6 +70,13 @@ export default function Navigation() {
                         <div className="ml-10 flex items-baseline space-x-4">
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={"/receptions"}
+                            onClick={() => {}}
+                          >
+                            Receptions
+                          </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                             to={"/levels"}
                             onClick={() => {}}
                           >
@@ -93,6 +100,12 @@ export default function Navigation() {
                             to={"/cleaners"}
                           >
                             My Cleaners
+                          </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={"/materials"}
+                          >
+                            Material List
                           </Link>
                           <button
                             className="text-white bg-blue-400 px-3 py-2 rounded-md text-sm font-medium"

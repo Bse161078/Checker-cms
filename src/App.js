@@ -8,6 +8,8 @@ import Cleaners from './pages/my-cleaners';
 import MyCheckers from './pages/my-checkers';
 import Panel from './pages/panel';
 import Levels from './pages/levels';
+import Receptions from './pages/receptions';
+import MaterialList from './pages/material-list';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/checkers" element={<MyCheckers />} />
         <Route path="/rooms" element={<Panel />} />
         <Route path="/levels" element={<Levels />} />
+        <Route path="/receptions" element={<Receptions />} />
+        <Route path="/materials" element={<MaterialList />} />
         <Route path="/companycheckers" element={<MyCheckers />} />
         <Route path="/companycleaners" element={<Cleaners />} />
         <Route path="/login" element={<Login />} />
