@@ -41,22 +41,6 @@ const MyCheckers = () => {
         render: (text) => <a>{text}</a>,
       },
       {
-        title: "Salary Per Room",
-        dataIndex: "salaryPerRoom",
-        key: "salaryPerRoom ",
-        render: (text) => <a>{text}</a>,
-      },
-      {
-        title: "Rooms To Clean Per Day",
-        key: "tags",
-        dataIndex: "roomCountForCleanEachDay ",
-        render: (_, { roomCountForCleanEachDay }) => (
-          <>
-            <Tag color={"blue"}>{roomCountForCleanEachDay}</Tag>
-          </>
-        ),
-      },
-      {
         title: "Action",
         key: "action",
         render: (_, { _id }) => (
@@ -153,7 +137,7 @@ const MyCheckers = () => {
           },
         })
         .then((response) => {
-          setUsers(response?.data?.data?.cleaners);
+          setUsers(response?.data?.data?.checkers);
         });
     };
   
