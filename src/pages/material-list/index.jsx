@@ -13,7 +13,7 @@ const MaterialList = () => {
   const [loading, setLoading] = useState(false);
   const [MaterialName, setMaterialName] = useState();
   const [MaterialDEName, setMaterialDEName] = useState();
-  const [Price, setPrice] = useState();
+  const [Price, setPrice] = useState(0);
   const [Quantity, SetQuantity] = useState();
 
   const columns = [
@@ -143,7 +143,7 @@ const MaterialList = () => {
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data?.levels);
+        setUsers(response?.data?.data?.materials);
       });
   };
 
@@ -156,12 +156,12 @@ const MaterialList = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">Levels List</h2>
+          <h2 className="text-2xl text-black font-medium">Material List</h2>
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
           >
-            Create Level
+            Create Material
           </button>
         </div>
         <Table className="w-full" dataSource={users} columns={columns} />

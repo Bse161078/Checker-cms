@@ -144,7 +144,7 @@ const Receptions = () => {
 
   const getReceptions = () => {
     axios
-      .get(`${BASEURL}/hotel/receptions/${HotelID}`, {
+      .get(`${BASEURL}/hotel/receptions`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },

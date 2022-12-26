@@ -17,14 +17,14 @@ import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 const Cleaners = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCleanerModalOpen, setIsCleanerModalOpen] = useState(false);
-  const [isReceptionModalOpen, setIsReceptionModalOpen] = useState(false);
+  const [isDescModalOpen, setIsDescModalOpen] = useState(false);
   const [users, setUsers] = useState();
+  const [cleaner, setCleaner] = useState();
   const [loading, setLoading] = useState(false);
   const [hotelID, setHotelID] = useState();
   const [CleanerFullName, setCleanerFullName] = useState();
   const [CleanerUsername, setCleanerUserName] = useState();
   const [CleanerPassword, setCleanerPassword] = useState();
-  const [CleanerSalary, setCleanerSalary] = useState(0);
   const [CleanerRoomCount, setCleanerRoomCountForClean] = useState(0);
 
   const columns = [
@@ -38,12 +38,6 @@ const Cleaners = () => {
       title: "Full Name",
       dataIndex: "fullname",
       key: "fullname",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Salary Per Room",
-      dataIndex: "salaryPerRoom",
-      key: "salaryPerRoom ",
       render: (text) => <a>{text}</a>,
     },
     {
@@ -68,6 +62,15 @@ const Cleaners = () => {
             }}
           >
             Delete
+          </button>
+          <button
+            className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              setIsDescModalOpen(true);
+              getCleanerById(_id)
+            }}
+          >
+            Report
           </button>
         </Space>
       ),
@@ -111,7 +114,6 @@ const Cleaners = () => {
           fullname: CleanerFullName,
           username: CleanerUsername,
           password: CleanerPassword,
-          salaryPerRoom: CleanerSalary,
           roomCountForCleanEachDay: CleanerRoomCount,
         },
         {
@@ -154,6 +156,18 @@ const Cleaners = () => {
       })
       .then((response) => {
         setUsers(response?.data?.data?.cleaners);
+      });
+  };
+
+  const getCleanerById = (id) => {
+    axios
+      .get(`${BASEURL}/cleaner/${id}`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        setCleaner(response?.data?.data?.cleaner);
       });
   };
 
@@ -236,16 +250,6 @@ const Cleaners = () => {
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
-              Salary Per Room
-            </label>
-            <Input
-              onChange={(e) => {
-                setCleanerSalary(e.target.value);
-              }}
-            />
-          </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">
               Rooms He Should Clean Per Day
             </label>
             <Input
@@ -253,6 +257,50 @@ const Cleaners = () => {
                 setCleanerRoomCountForClean(e.target.value);
               }}
             />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Cleaner Report"
+        open={isDescModalOpen}
+        onCancel={() => {
+          setIsDescModalOpen(false);
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setIsDescModalOpen(false);
+            }}
+          >
+            Return
+          </Button>,
+        ]}
+      >
+        <div className="grid grid-cols-2 gap-y-10 w-full my-10">
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">
+              Full Name : 
+            </h3>
+            <p className="text-gray-500 text-lg">{cleaner?.fullname}</p> 
+          </div>
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">
+              Bill :
+            </h3>
+            <p className="text-gray-500 text-lg">{cleaner?.billAmount}</p> 
+          </div>
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">
+              Room Not Cleaned : 
+            </h3>
+            <p className="text-gray-500 text-lg">{cleaner?.roomNotCleanedCount}</p> 
+          </div>
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">
+              Room Cleaned :
+            </h3>
+            <p className="text-gray-500 text-lg">{cleaner?.roomCleanedCount}</p> 
           </div>
         </div>
       </Modal>

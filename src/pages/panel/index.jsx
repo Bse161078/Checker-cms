@@ -18,6 +18,7 @@ const Rooms = () => {
   const [RoomTypeName, setRoomTypeName] = useState();
   const [RoomTypeNameDe, setRoomTypeNameDe] = useState();
   const [RoomTypes, SetRoomType] = useState();
+  const [CleanerSalary, setCleanerSalary] = useState(0);
   const [Levels, setLevels] = useState();
 
   const handleChange = (value) => {
@@ -264,6 +265,7 @@ const Rooms = () => {
         {
           title: RoomTypeName,
           title_de: RoomTypeNameDe,
+          price: CleanerSalary,
         },
         {
           headers: {
@@ -484,6 +486,16 @@ const Rooms = () => {
                 setRoomTypeNameDe(e.target.value);
               }}
               placeholder="(optional)"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Salary Per Room
+            </label>
+            <Input
+              onChange={(e) => {
+                setCleanerSalary(e.target.value);
+              }}
             />
           </div>
         </div>
