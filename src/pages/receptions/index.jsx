@@ -12,23 +12,15 @@ const Receptions = () => {
   const [addRoomModalOpen, setAddRoomModalOpen] = useState(false);
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
-  const [roomType, setRoomType] = useState();
-  const [Level, setLevel] = useState();
-  const [RoomName, setRoomName] = useState();
-  const [LevelName, setLevelName] = useState();
-  const [RoomNameDe, setRoomNameDe] = useState();
-  const [RoomTypes, SetRoomType] = useState();
-  const [Levels, setLevels] = useState();
-
-  const handleChange = (value) => {
-    SetRoomType(value);
-  };
+  const [fullName, setFullName] = useState();
+  const [username, setUserName] = useState();
+  const [password, setPassword] = useState();
 
   const columns = [
     {
       title: "Name",
-      dataIndex: "title",
-      key: "title",
+      dataIndex: "fullname",
+      key: "fullname",
       render: (text) => <a>{text}</a>,
     },
     {
@@ -98,9 +90,11 @@ const Receptions = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/level`,
+        `${BASEURL}/hotel/create-hotel-reception`,
         {
-          title: LevelName,
+          fullname: fullName,
+          username: username,
+          password: password,
         },
         {
           headers: {
@@ -144,13 +138,13 @@ const Receptions = () => {
 
   const getReceptions = () => {
     axios
-      .get(`${BASEURL}/hotel/receptions`, {
+      .get(`${BASEURL}/hotel/receptions/${HotelID}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data?.levels);
+        setUsers(response?.data?.data?.receptions);
       });
   };
 
@@ -216,7 +210,7 @@ const Receptions = () => {
             <label className="w-full text-left font-semibold">Full Name</label>
             <Input
               onChange={(e) => {
-                setLevelName(e.target.value);
+                setFullName(e.target.value);
               }}
               placeholder="sample sample"
             />
@@ -225,7 +219,7 @@ const Receptions = () => {
             <label className="w-full text-left font-semibold">User Name</label>
             <Input
               onChange={(e) => {
-                setLevelName(e.target.value);
+                setUserName(e.target.value);
               }}
               placeholder="sample"
             />
@@ -234,7 +228,7 @@ const Receptions = () => {
             <label className="w-full text-left font-semibold">Password</label>
             <Input
               onChange={(e) => {
-                setLevelName(e.target.value);
+                setPassword(e.target.value);
               }}
               placeholder="103"
             />
