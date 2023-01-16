@@ -325,7 +325,7 @@ const Home = () => {
           </Button>,
         ]}
       >
-        <div className="flex flex-col justify-center items-center gap-y-4">
+        {/* <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">Full Name</label>
             <Input
@@ -342,6 +342,30 @@ const Home = () => {
                 setCompanyUserName(e.target.value);
               }}
               placeholder="thisisjack"
+<<<<<<< HEAD
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Password</label>
+            <Input.Password
+              onChange={(e) => {
+                setCompanyPassword(e.target.value);
+              }}
+              placeholder="input password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Email</label>
+            <Input
+              onChange={(e) => {
+                setCompanyEmail(e.target.value);
+              }}
+              placeholder="sample@gmail.com"
+=======
+>>>>>>> parent of 0a0a772 (feat: add titles and some pages done)
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
@@ -365,7 +389,7 @@ const Home = () => {
               placeholder="sample@gmail.com"
             />
           </div>
-        </div>
+        </div> */}
       </Modal>
     </div>
   );
