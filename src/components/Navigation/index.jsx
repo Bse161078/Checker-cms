@@ -42,13 +42,19 @@ export default function Navigation() {
                           </Link>
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                            to={"/Doctors"}
+                            to={"/doctors"}
                           >
                             Doctors
                           </Link>
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                            to={"/Blogs"}
+                            to={"/users"}
+                          >
+                            Users
+                          </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={"/blogs"}
                           >
                             Blogs
                           </Link>

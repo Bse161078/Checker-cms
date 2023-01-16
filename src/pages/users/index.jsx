@@ -7,7 +7,7 @@ import { Toaster, toast } from "react-hot-toast";
 import Navigation from "../../components/Navigation";
 import { useNavigate } from "react-router-dom";
 
-const Levels = () => {
+const Users = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addRoomModalOpen, setAddRoomModalOpen] = useState(false);
   const [users, setUsers] = useState();
@@ -26,53 +26,71 @@ const Levels = () => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "title",
-      key: "title",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, { _id }) => (
-        <Space>
-          <button
-            className="bg-red-100 text-red-500 px-2 py-2 rounded-md"
-            onClick={() => {
-              handleDelete(_id);
-            }}
-          >
-            Delete
-          </button>
-          {/* <button
-                className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setHotelID(_id);
-                }}
-              >
-                Create Checker
-              </button>
-              <button
-                className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
-                onClick={() => {
-                  setIsCleanerModalOpen(true);
-                }}
-              >
-                Create Cleaner
-              </button>*/}
-          <button
-            className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
-            onClick={() => {
-              setAddRoomModalOpen(true);
-              setLevel(_id);
-            }}
-          >
-            Create Room
-          </button>
-        </Space>
+      title: "Full Name",
+      dataIndex: "contactInfo",
+      key: "contactInfo",
+      render: (_, { contactInfo }) => (
+        <>
+          <a>{contactInfo?.fullName}</a>
+        </>
       ),
     },
+    {
+      title: "Email",
+      dataIndex: "contactInfo",
+      key: "contactInfo",
+      render: (_, { contactInfo }) => (
+        <>
+          <a>{contactInfo?.email}</a>
+        </>
+      ),
+    },
+    {
+      title: "Mobile",
+      dataIndex: "contactInfo",
+      key: "contactInfo",
+      render: (_, { contactInfo }) => (
+        <>
+          <a>{contactInfo?.mobile}</a>
+        </>
+      ),
+    },
+    {
+      title: "Username",
+      dataIndex: "contactInfo",
+      key: "contactInfo",
+      render: (_, { contactInfo }) => (
+        <>
+          <a>{contactInfo?.username}</a>
+        </>
+      ),
+    },
+    {
+      title: "Role",
+      key: "Role",
+      dataIndex: "role",
+      render: (_, { role }) => (
+        <>
+          <Tag color={"blue"}>{role}</Tag>
+        </>
+      ),
+    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (_, { id }) => (
+    //     <Space>
+    //       <button
+    //         className="bg-red-100 text-red-500 px-2 py-2 rounded-md"
+    //         onClick={() => {
+    //           handleDelete(id);
+    //         }}
+    //       >
+    //         Delete
+    //       </button>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   const handleDelete = (id) => {
@@ -178,7 +196,6 @@ const Levels = () => {
 
   useEffect(() => {
     getrooms();
-    getRoomType();
     IsImLoggedIn();
   }, []);
 
@@ -190,25 +207,13 @@ const Levels = () => {
 
   const getrooms = () => {
     axios
-      .get(`${BASEURL}/level`, {
+      .get(`${BASEURL}/user/list`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data?.levels);
-      });
-  };
-
-  const getRoomType = () => {
-    axios
-      .get(`${BASEURL}/room-type`, {
-        headers: {
-          Authorization: `Bearer ${Token}`,
-        },
-      })
-      .then((response) => {
-        setRoomType(response?.data?.data?.roomTypes);
+        setUsers(response?.data?.data?.users);
       });
   };
 
@@ -221,8 +226,7 @@ const Levels = () => {
       })
       .then((response) => {
         if (response?.data?.statusCode === 200 || 201) {
-          navigate('/levels')
-          localStorage.setItem("HotelID", response?.data?.data?.user?._id)
+          console.log('tada')
         } else {
           navigate('/login')
         }
@@ -240,15 +244,9 @@ const Levels = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">Levels List</h2>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
-          >
-            Create Level
-          </button>
+          <h2 className="text-2xl text-black font-medium">Users List</h2>
         </div>
-        <Table className="w-full" dataSource={users} columns={columns} />
+        <Table pagination={{ pageSize: 5}} bordered className="w-full" dataSource={users} columns={columns} />
       </section>
       <Modal
         title="Create Level"
@@ -345,4 +343,4 @@ const Levels = () => {
   );
 };
 
-export default Levels;
+export default Users;

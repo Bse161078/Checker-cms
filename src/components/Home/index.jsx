@@ -53,6 +53,30 @@ const Home = () => {
           >
             Delete
           </button>
+          <button
+            className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              setIsCompanyModalOpen(true);
+            }}
+          >
+            Add Package Titles (Home Page)
+          </button>
+          <button
+            className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              // setIsCleanerModalOpen(true);
+            }}
+          >
+            Add Package Price
+          </button>
+          <button
+            className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
+            onClick={() => {
+              // setIsReceptionModalOpen(true)
+            }}
+          >
+            Add Package SEO
+          </button>
         </Space>
       ),
     },
@@ -291,7 +315,7 @@ const Home = () => {
             </label>
             <Input
               onChange={(e) => {
-                set(e.target.value);
+                // set(e.target.value);
               }}
               name="additionalInfo"
               placeholder="example"
@@ -303,7 +327,7 @@ const Home = () => {
               multiple
               style={{ width: 120 }}
               name="tags"
-              onChange={handleChange}
+              // onChange={handleChange}
             >
               {Tags?.map((item) => {
                 return <option value={item.value}>{item.name}</option>;
@@ -313,7 +337,7 @@ const Home = () => {
         </div>
       </Modal>
       <Modal
-        title="Create Company"
+        title="Add Package Details"
         open={isCompanyModalOpen}
         onOk={handleOk}
         onCancel={() => {
@@ -338,47 +362,26 @@ const Home = () => {
           </Button>,
         ]}
       >
-        {/* <div className="flex flex-col justify-center items-center gap-y-4">
+        <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Full Name</label>
+            <label className="w-full text-left font-semibold">Title</label>
             <Input
               onChange={(e) => {
-                setCompanyFullName(e.target.value);
+                // setCompanyFullName(e.target.value);
               }}
-              placeholder="jack grilish"
+              placeholder="mood"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">User Name</label>
+            <label className="w-full text-left font-semibold">Description</label>
             <Input
               onChange={(e) => {
-                setCompanyUserName(e.target.value);
+                // setCompanyUserName(e.target.value);
               }}
-              placeholder="thisisjack"
+              placeholder="for public"
             />
           </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Password</label>
-            <Input.Password
-              onChange={(e) => {
-                setCompanyPassword(e.target.value);
-              }}
-              placeholder="input password"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-          </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Email</label>
-            <Input
-              onChange={(e) => {
-                setCompanyEmail(e.target.value);
-              }}
-              placeholder="sample@gmail.com"
-            />
-          </div>
-        </div> */}
+        </div>
       </Modal>
     </div>
   );
