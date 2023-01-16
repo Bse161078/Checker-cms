@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
-import Logo from "../../image/checkerdark.png";
+import Logo from "../../image/logo.png";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import { BASEURL } from "../../constants";
@@ -29,10 +29,6 @@ const Login = () => {
         });
         if (res?.data?.data?.loginResult?.role === 'SuperAdmin') {
           navigate('/')
-        } else if (res?.data?.data?.loginResult?.role === 'HotelAdmin') {
-          navigate('/levels')
-        } else if (res?.data?.data?.loginResult?.role === 'CompanyAdmin') {
-          navigate('/companycleaners')
         }
         setLoading(false);
       })
@@ -49,7 +45,7 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center w-screen h-screen">
       <Toaster position="top-center" reverseOrder={true} />
-      <div className="flex flex-col justify-center items-center px-4 py-3 border-2 border-gray-100 rounded-lg bg-white gap-y-6">
+      <div className="flex flex-col justify-center items-center px-4 py-6 border-2 border-gray-100 rounded-lg bg-white gap-y-6">
         <img width={150} src={Logo} alt="" />
         <Form
           name="basic"
@@ -77,7 +73,7 @@ const Login = () => {
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <button
-              className="bg-blue-400 text-white w-1/2 py-2"
+              className="bg-blue-400 text-white w-1/2 py-2 rounded-lg"
               htmlType="submit"
             >
               Submit

@@ -6,38 +6,37 @@ import { BASEURL } from "../../constants";
 import Navigation from "../Navigation";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Tags } from "../../data/tag";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState([]);
+  const [image, setImage] = useState();
+  const [title, setTitle] = useState();
+  const [type, setType] = useState();
+  const [additionalInfo, setAdditionalInfo] = useState();
+  const [desc, setDesc] = useState();
   const [loading, setLoading] = useState(false);
+  
+
   const [open, setOpen] = useState(false);
 
-  const [fullName, setFullName] = useState();
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
-  const [email, setEmail] = useState();
-  const [CompanyfullName, setCompanyFullName] = useState();
-  const [Companyusername, setCompanyUserName] = useState();
-  const [Companypassword, setCompanyPassword] = useState();
-  const [Companyemail, setCompanyEmail] = useState();
   const navigate = useNavigate();
   const columns = [
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
+      title: "title",
+      dataIndex: "title",
+      key: "title",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "role",
-      render: (_, { role }) => (
+      title: "type",
+      key: "type",
+      dataIndex: "type",
+      render: (_, { type }) => (
         <>
-          <Tag color={"blue"}>{role}</Tag>
+          <Tag color={"blue"}>{type}</Tag>
         </>
       ),
     },
@@ -61,7 +60,7 @@ const Home = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${BASEURL}/user/${id}`, {
+      .delete(`${BASEURL}/package/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -87,23 +86,18 @@ const Home = () => {
 
   const Token = localStorage.getItem("Token");
 
-  const CreateHotelUserHandler = () => {
+  const CreatePackage = () => {
     setLoading(true);
     axios
-      .post(
-        `${BASEURL}/hotel`,
-        {
-          fullname: fullName,
-          username: username,
-          password: password,
-          email: email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
+      .post(`${BASEURL}/package`, {
+        body: {
+          
         }
-      )
+      }, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
       .then((res) => {
         toast("Created Successfully!", {
           icon: "👏",
@@ -125,43 +119,43 @@ const Home = () => {
       });
   };
 
-  const CreateCompanyUserHandler = () => {
-    setLoading(true);
-    axios
-      .post(
-        `${BASEURL}/company`,
-        {
-          fullname: CompanyfullName,
-          username: Companyusername,
-          password: Companypassword,
-          email: Companyemail,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
-      .then((res) => {
-        toast("Created Successfully!", {
-          icon: "👏",
-          style: {
-            borderRadius: "4px",
-            background: "#333",
-            color: "#fff",
-          },
-        });
-        setLoading(false);
-        setIsCompanyModalOpen(false);
-        window.setTimeout(function () {
-          location.reload();
-        }, 1500);
-      })
-      .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
-        setLoading(false);
-      });
-  };
+  // const CreateCompanyUserHandler = () => {
+  //   setLoading(true);
+  //   axios
+  //     .post(
+  //       `${BASEURL}/company`,
+  //       {
+  //         fullname: CompanyfullName,
+  //         username: Companyusername,
+  //         password: Companypassword,
+  //         email: Companyemail,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${Token}`,
+  //         },
+  //       }
+  //     )
+  //     .then((res) => {
+  //       toast("Created Successfully!", {
+  //         icon: "👏",
+  //         style: {
+  //           borderRadius: "4px",
+  //           background: "#333",
+  //           color: "#fff",
+  //         },
+  //       });
+  //       setLoading(false);
+  //       setIsCompanyModalOpen(false);
+  //       window.setTimeout(function () {
+  //         location.reload();
+  //       }, 1500);
+  //     })
+  //     .catch((err) => {
+  //       toast.error(err?.response?.data?.error?.message);
+  //       setLoading(false);
+  //     });
+  // };
 
   const IsImLoggedIn = () => {
     axios
@@ -172,17 +166,18 @@ const Home = () => {
       })
       .then((response) => {
         if (response?.data?.statusCode === 200 || 201) {
-          navigate('/')
+          navigate("/");
         } else {
-          navigate('/login')
+          navigate("/login");
         }
-      }).catch((err) => {
-        navigate('/login')
+      })
+      .catch((err) => {
+        navigate("/login");
       });
   };
 
   useEffect(() => {
-    IsImLoggedIn()
+    IsImLoggedIn();
     getUsers();
   }, []);
 
@@ -202,13 +197,13 @@ const Home = () => {
 
   const getUsers = () => {
     axios
-      .get(`${BASEURL}/user`, {
+      .get(`${BASEURL}/package`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data);
+        setUsers(response?.data?.data?.packages);
       });
   };
 
@@ -221,28 +216,20 @@ const Home = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">User List</h2>
+          <h2 className="text-2xl text-black font-medium">Package List</h2>
           <div className="flex justify-center items-center gap-x-4">
             <button
               onClick={showModal}
               className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
             >
-              Create Hotel
-            </button>
-            <button
-              onClick={() => {
-                setIsCompanyModalOpen(true);
-              }}
-              className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
-            >
-              Create Company
+              Create Package
             </button>
           </div>
         </div>
         <Table className="w-full" dataSource={users} columns={columns} />
       </section>
       <Modal
-        title="Create User"
+        title="Create Package"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -254,7 +241,7 @@ const Home = () => {
             className="bg-blue-400 text-white hover:bg-white"
             key="link"
             loading={loading}
-            onClick={CreateHotelUserHandler}
+            onClick={CreatePackage}
           >
             Create
           </Button>,
@@ -262,43 +249,66 @@ const Home = () => {
       >
         <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Full Name</label>
+            <label className="w-full text-left font-semibold">Title</label>
             <Input
+              alt="title"
               onChange={(e) => {
-                setFullName(e.target.value);
+                setTitle(e.target.value);
               }}
-              placeholder="jack grilish"
+              placeholder="example"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">User Name</label>
+            <label className="w-full text-left font-semibold">type</label>
+            <Select
+              multiple
+              style={{ width: 120 }}
+              name="type"
+              onChange={(e) => {
+                setType(e.target.value);
+              }}
+            >
+              {Tags?.map((item) => {
+                return <option value={item.value}>{item.name}</option>;
+              })}
+            </Select>
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              description
+            </label>
             <Input
               onChange={(e) => {
-                setUserName(e.target.value);
+                setDesc(e.target.value);
               }}
+              name="description"
               placeholder="thisisjack"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Password</label>
-            <Input.Password
+            <label className="w-full text-left font-semibold">
+              Additional Info
+            </label>
+            <Input
               onChange={(e) => {
-                setPassword(e.target.value);
+                set(e.target.value);
               }}
-              placeholder="input password"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
+              name="additionalInfo"
+              placeholder="example"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Email</label>
-            <Input
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              placeholder="sample@gmail.com"
-            />
+            <label className="w-full text-left font-semibold">Tags</label>
+            <Select
+              multiple
+              style={{ width: 120 }}
+              name="tags"
+              onChange={handleChange}
+            >
+              {Tags?.map((item) => {
+                return <option value={item.value}>{item.name}</option>;
+              })}
+            </Select>
           </div>
         </div>
       </Modal>
@@ -307,25 +317,28 @@ const Home = () => {
         open={isCompanyModalOpen}
         onOk={handleOk}
         onCancel={() => {
-          setIsCompanyModalOpen(false)
+          setIsCompanyModalOpen(false);
         }}
         footer={[
-          <Button key="back" onClick={() => {
-            setIsCompanyModalOpen(false)
-          }}>
+          <Button
+            key="back"
+            onClick={() => {
+              setIsCompanyModalOpen(false);
+            }}
+          >
             Return
           </Button>,
           <Button
             className="bg-blue-400 text-white hover:bg-white"
             key="link"
             loading={loading}
-            onClick={CreateCompanyUserHandler}
+            // onClick={CreateCompanyUserHandler}
           >
             Create
           </Button>,
         ]}
       >
-        <div className="flex flex-col justify-center items-center gap-y-4">
+        {/* <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">Full Name</label>
             <Input
@@ -365,7 +378,7 @@ const Home = () => {
               placeholder="sample@gmail.com"
             />
           </div>
-        </div>
+        </div> */}
       </Modal>
     </div>
   );

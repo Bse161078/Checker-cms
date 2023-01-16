@@ -18,10 +18,6 @@ function classNames(...classes) {
 export default function Navigation() {
   const navigate = useNavigate();
   const Role = localStorage.getItem("Role");
-  const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    { name: "Sign out", href: "#" },
-  ];
 
   return (
     <>
@@ -46,15 +42,15 @@ export default function Navigation() {
                           </Link>
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                            to={"/hotels"}
+                            to={"/Doctors"}
                           >
-                            Hotels
+                            Doctors
                           </Link>
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                            to={"/companies"}
+                            to={"/Blogs"}
                           >
-                            Companies
+                            Blogs
                           </Link>
                           <button
                             className="text-white bg-blue-400 px-3 py-2 rounded-md text-sm font-medium"

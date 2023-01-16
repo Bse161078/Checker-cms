@@ -1,1 +1,1 @@
-export const BASEURL = 'https://api.the-checkerapp.com' 
+export const BASEURL = 'https://panel.shopdochealth.com' 
