@@ -31,8 +31,8 @@ const Login = () => {
           navigate('/')
         } else if (res?.data?.data?.loginResult?.role === 'HotelAdmin') {
           navigate('/levels')
-        } else if (res?.data?.data?.loginResult?.role === 'Cleaner') {
-          navigate('/cleaner-profile')
+        } else if (res?.data?.data?.loginResult?.role === 'CompanyAdmin') {
+          navigate('/levels')
         }
         setLoading(false);
       })

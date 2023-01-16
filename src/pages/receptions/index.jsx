@@ -148,7 +148,6 @@ const Receptions = () => {
       });
   };
 
-
   const IsImLoggedIn = () => {
     axios
       .get(`${BASEURL}/auth/check-login`, {
