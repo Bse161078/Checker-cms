@@ -29,7 +29,7 @@ const Login = () => {
         });
         if (res?.data?.data?.loginResult?.role === 'SuperAdmin') {
           navigate('/')
-        }
+        } 
         setLoading(false);
       })
       .catch((err) => {
