@@ -1,1 +1,1 @@
-export const BASEURL = 'https://api.the-checkerapp.com' 
+export const BASEURL = 'http://35.178.46.228:3010' 
