@@ -23,6 +23,7 @@ const Rooms = () => {
 
   const handleChange = (value) => {
     SetRoomType(value);
+    console.log(roomType,"roomtype")
   };
 
   const handleChanges = (value) => {
@@ -227,7 +228,7 @@ const Rooms = () => {
         {
           roomType: RoomTypes,
           name: RoomName,
-          name_de: RoomNameDe,
+          //name_de: RoomNameDe,
           level: Levels,
         },
         {
@@ -252,6 +253,7 @@ const Rooms = () => {
         }, 1500);
       })
       .catch((err) => {
+        console.log("error",err)
         toast.error(err?.response?.data?.error?.message);
         setLoading(false);
       });

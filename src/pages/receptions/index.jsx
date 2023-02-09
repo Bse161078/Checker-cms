@@ -15,7 +15,14 @@ const Receptions = () => {
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [img, setImg] = useState()
 
+  const imgFilehandler = (e) => {
+    if (e.target.files.length !== 0) {
+      setImg(e.target.files[0]);
+    }
+    console.log(img,"Img")
+  }
   const columns = [
     {
       title: "Name",
@@ -87,15 +94,18 @@ const Receptions = () => {
   const Token = localStorage.getItem("Token");
 
   const CreateLevel = () => {
+    const formData = new FormData();
+    formData.append('fullname', fullName);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('hotel', "hotel");
+    formData.append('logo', img);
+    console.log(formData,"form")
     setLoading(true);
     axios
       .post(
         `${BASEURL}/hotel/create-hotel-reception`,
-        {
-          fullname: fullName,
-          username: username,
-          password: password,
-        },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${Token}`,
@@ -228,6 +238,15 @@ const Receptions = () => {
             <Input
               onChange={(e) => {
                 setPassword(e.target.value);
+              }}
+              placeholder="103"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Logo upload</label>
+            <Input type="file"
+              onChange={(e) => {
+                imgFilehandler(e);
               }}
               placeholder="103"
             />
