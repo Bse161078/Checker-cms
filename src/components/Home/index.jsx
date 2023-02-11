@@ -14,7 +14,8 @@ const Home = () => {
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [hotelName,setHotelName] = useState();
+  const [img,setImg] = useState();
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
@@ -88,16 +89,19 @@ const Home = () => {
   const Token = localStorage.getItem("Token");
 
   const CreateHotelUserHandler = () => {
+    const formData = new FormData();
+    formData.append('fullname', fullName);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('email', email);
+    formData.append('hotel_name', "Meriott");
+    formData.append('avatar', img);
+
     setLoading(true);
     axios
       .post(
         `${BASEURL}/hotel`,
-        {
-          fullname: fullName,
-          username: username,
-          password: password,
-          email: email,
-        },
+       formData,
         {
           headers: {
             Authorization: `Bearer ${Token}`,
@@ -162,7 +166,12 @@ const Home = () => {
         setLoading(false);
       });
   };
-
+  const imgFilehandler = (e) => {
+    if (e.target.files.length !== 0) {
+      setImg(e.target.files[0]);
+    }
+    console.log(img,"Img")
+  }
   const IsImLoggedIn = () => {
     axios
       .get(`${BASEURL}/auth/check-login`, {
@@ -277,6 +286,15 @@ const Home = () => {
                 setUserName(e.target.value);
               }}
               placeholder="thisisjack"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">User Name</label>
+            <Input type="file"
+              onChange={(e) => {
+                imgFilehandler(e);
+              }}
+              placeholder="103"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">

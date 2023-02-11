@@ -21,7 +21,6 @@ const Receptions = () => {
     if (e.target.files.length !== 0) {
       setImg(e.target.files[0]);
     }
-    console.log(img,"Img")
   }
   const columns = [
     {
@@ -100,7 +99,6 @@ const Receptions = () => {
     formData.append('password', password);
     formData.append('hotel', "hotel");
     formData.append('logo', img);
-    console.log(formData,"form")
     setLoading(true);
     axios
       .post(
