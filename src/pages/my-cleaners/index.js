@@ -107,6 +107,7 @@ const Cleaners = () => {
   const Token = localStorage.getItem("Token");
 
   const CreateCleaner = () => {
+    debugger;
     setLoading(true);
     const formData = new FormData();
     formData.append("fullname", CleanerFullName);
@@ -147,8 +148,8 @@ const Cleaners = () => {
     getCleaners();
   }, []);
 
-  const getCleaners = () => {
-    axios
+  const getCleaners = async () => {
+    await axios
       .get(`${BASEURL}/cleaner`, {
         headers: {
           Authorization: `Bearer ${Token}`,

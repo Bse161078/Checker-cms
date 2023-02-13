@@ -3,6 +3,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "../../image/logo.png";
 import { Link, useNavigate } from "react-router-dom";
+import { BASEURL } from "../../constants";
 
 const user = {
   name: "Tom Cook",
@@ -15,7 +16,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Navigation() {
+export default function CleanerNavigation({ user }) {
   const navigate = useNavigate();
   const Role = localStorage.getItem("Role");
   const userNavigation = [
@@ -31,9 +32,14 @@ export default function Navigation() {
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
-                  <div className="flex items-center w-full ">
+                  <div className="flex items-center w-full justify-between">
                     <div className="flex-shrink-0">
-                      <img width={150} src={Logo} alt="The Checker App" />
+                      <img
+                        style={{ padding: "30px" }}
+                        width={150}
+                        src={BASEURL + "/" + user?.hotel?.avatar}
+                        alt="The Checker App"
+                      />
                     </div>
                     <div className="hidden md:block ">
                       {Role === "SuperAdmin" ? (
@@ -56,15 +62,18 @@ export default function Navigation() {
                           >
                             Companies
                           </Link> */}
-                          <button
-                            className="text-white bg-blue-400 px-3 py-2 rounded-md text-sm font-medium"
-                            onClick={() => {
-                              localStorage.clear();
-                              navigate("/login");
-                            }}
-                          >
-                            Sign Out
-                          </button>
+                          <div style={{ marginLeft: "20px" }}>
+                            <button
+                              style={{ marginLeft: "20px" }}
+                              className="text-white bg-blue-400 px-3 py-2 rounded-md text-sm font-medium "
+                              onClick={() => {
+                                localStorage.clear();
+                                navigate("/login");
+                              }}
+                            >
+                              Sign Out
+                            </button>
+                          </div>
                         </div>
                       ) : Role === "Cleaner" ? (
                         <>

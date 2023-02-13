@@ -1,9 +1,13 @@
 import { Space, Table } from "antd";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import Navigation from "../../components/Navigation";
+import { BASEURL } from "../../constants";
 
 const CleanersUsed = () => {
+  const [cleaner, setCleaner] = useState();
+
   const dataSource = [
     {
       key: "1",
@@ -18,42 +22,56 @@ const CleanersUsed = () => {
       address: "10 Downing Street",
     },
   ];
+  const Token = localStorage.getItem("Token");
+
+  const getReports = () => {
+    axios
+      .get(`${BASEURL}/room/report`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        console.log({ response });
+        setCleaner(response.data.data);
+        // setLevel(response?.data?.data?.levels);
+      });
+  };
+  useEffect(() => {
+    getReports();
+  }, []);
 
   const columns = [
     {
       title: "No.",
       dataIndex: "name",
       key: "name",
+      render: (_, i, ind) => {
+        return <span>{ind}</span>;
+      },
     },
     {
       title: "Name",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: "fullname",
+      key: "fullname",
+      render: (_, i, ind) => {
+        return <span>{i?.cleaner?.fullname}</span>;
+      },
     },
     {
-      title: "Room Cleaned",
+      title: "Room Number",
       dataIndex: "address",
       key: "address",
-    },
-    {
-      title: "Extra",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Mistakes",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "",
-      dataIndex: "profile",
-      key: "profile",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>View Profile</a>
-        </Space>
-      ),
+      render: (_, i, ind) => {
+        console.log(i, "sd");
+        return (
+          <ul>
+            {i?.rooms?.map((el) => (
+              <li>{el?.name}</li>
+            ))}
+          </ul>
+        );
+      },
     },
   ];
   return (
@@ -65,7 +83,11 @@ const CleanersUsed = () => {
       <br />
       <br />
       <div class="container mx-auto " style={{ width: "80%" }}>
-        <Table className="w-full" dataSource={dataSource} columns={columns} />
+        <Table
+          className="w-full"
+          dataSource={cleaner?.cleanersReport}
+          columns={columns}
+        />
       </div>
     </div>
   );

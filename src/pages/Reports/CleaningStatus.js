@@ -1,10 +1,15 @@
 import { Progress, Space, Table } from "antd";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Navigation from "../../components/Navigation";
+import { BASEURL } from "../../constants";
 
 const CleaningStatus = () => {
+  const Token = localStorage.getItem("Token");
+  const [cleaner, setCleaner] = useState();
+
   const navigate = useNavigate();
   const dataSource = [
     {
@@ -26,34 +31,76 @@ const CleaningStatus = () => {
       title: "No.",
       dataIndex: "name",
       key: "name",
-    },
-    {
-      title: "Room Number",
-      dataIndex: "age",
-      key: "age",
-    },
-    {
-      title: "Cleaners",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Extra",
-      dataIndex: "address",
-      key: "address",
+      render: (_, i, ind) => {
+        return <span>{ind}</span>;
+      },
     },
 
     {
-      title: "",
-      dataIndex: "profile",
-      key: "profile",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Room Details</a>
-        </Space>
-      ),
+      title: "Room Number",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Room Cleaners",
+      dataIndex: "address",
+      key: "address",
+      render: (_, i, ind) => {
+        console.log(i, "sd");
+        return (
+          <ul>
+            {i?.rooms?.map((el) => (
+              <li>{el?.name}</li>
+            ))}
+          </ul>
+        );
+      },
+    },
+    {
+      title: "Room Details",
+      dataIndex: "address",
+      key: "address",
+      render: (_, i, ind) => {
+        console.log(i, "sd");
+        return <a href="">Room Details</a>;
+      },
     },
   ];
+  const filteredRoomsInprogress = cleaner?.cleanersReport?.reduce(
+    (acc, obj) => {
+      obj.rooms.forEach((room) => {
+        if (room.cleaning_status === "IN_PROGRESS") {
+          acc.push(room);
+        }
+      });
+      return acc;
+    },
+    []
+  );
+  const filteredRoomsCLEANED = cleaner?.cleanersReport?.reduce((acc, obj) => {
+    obj.rooms.forEach((room) => {
+      if (room.cleaning_status === "CLEANED") {
+        acc.push(room);
+      }
+    });
+    return acc;
+  }, []);
+  const getReports = () => {
+    axios
+      .get(`${BASEURL}/room/report`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        console.log({ response });
+        setCleaner(response.data.data);
+        // setLevel(response?.data?.data?.levels);
+      });
+  };
+  useEffect(() => {
+    getReports();
+  }, []);
   return (
     <div>
       <div className="flex flex-col justify-center items-center w-full">
@@ -76,7 +123,7 @@ const CleaningStatus = () => {
                   <br />
 
                   <Progress
-                    percent={30}
+                    percent={cleaner?.roomsInProgress}
                     size="large"
                     className="blackProgress"
                     style={{ height: "40px" }}
@@ -96,7 +143,7 @@ const CleaningStatus = () => {
                   <br />
 
                   <Progress
-                    percent={30}
+                    percent={cleaner?.roomsCleaned}
                     size="large"
                     className="greenProgress"
                     style={{ height: "40px" }}
@@ -116,7 +163,7 @@ const CleaningStatus = () => {
                   <br />
 
                   <Progress
-                    percent={30}
+                    percent={cleaner?.roomsNotCleaned}
                     size="large"
                     className="redProgress"
                     style={{ height: "40px" }}
@@ -130,11 +177,19 @@ const CleaningStatus = () => {
 
           <br />
 
-          <Table className="w-full" dataSource={dataSource} columns={columns} />
+          <Table
+            className="w-full"
+            dataSource={filteredRoomsInprogress}
+            columns={columns}
+          />
           <br />
           <p className="text-lg text-green-500 font-bold">Cleaned</p>
           <br />
-          <Table className="w-full" dataSource={dataSource} columns={columns} />
+          <Table
+            className="w-full"
+            dataSource={filteredRoomsCLEANED}
+            columns={columns}
+          />
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import Navigation from "../../components/Navigation";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { Collapse, theme } from "antd";
 import { Navigate, useNavigate } from "react-router-dom";
+import CleanerNavigation from "./CleanerNavigation";
 const { Panel } = Collapse;
 const text = `
   A dog is a type of domesticated animal.
@@ -80,13 +81,13 @@ const CleanerDaashBoard = () => {
   }, []);
   return (
     <div className="flex flex-col justify-center items-center w-full">
-      <Navigation />
+      <CleanerNavigation user={user} />
       <div className="w-full">
         <div className="flex items-center justify-center  mt-8">
           <Avatar
             style={{ height: "60px", width: "60px" }}
             size={"large"}
-            src={BASEURL + "/" + user?.hotel?.avatar}
+            src={BASEURL + "/" + user?.avatar}
             alt="..."
           />
         </div>
@@ -117,7 +118,11 @@ const CleanerDaashBoard = () => {
           >
             {Level?.map((el, ind) => {
               return (
-                <Panel header={el.title} key={ind} style={panelStyle}>
+                <Panel
+                  header={"Level" + " " + el.title}
+                  key={ind}
+                  style={panelStyle}
+                >
                   <div class="flex flex-wrap -mx-1">
                     {rooms?.map((room, ind) => {
                       return (
@@ -131,7 +136,7 @@ const CleanerDaashBoard = () => {
                         >
                           <div class="bgCard p-4">
                             <div className=" text-lg font-bold ">
-                              <div>{room.name}</div>
+                              Room <div>{room.name}</div>
                               <br />
                             </div>
                           </div>
