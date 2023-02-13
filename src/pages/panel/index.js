@@ -23,7 +23,7 @@ const Rooms = () => {
 
   const handleChange = (value) => {
     SetRoomType(value);
-    console.log(roomType,"roomtype")
+    console.log(roomType, "roomtype");
   };
 
   const handleChanges = (value) => {
@@ -228,8 +228,9 @@ const Rooms = () => {
         {
           roomType: RoomTypes,
           name: RoomName,
-          //name_de: RoomNameDe,
+          name_de: RoomNameDe,
           level: Levels,
+          hotel: localStorage.getItem("HotelID"),
         },
         {
           headers: {
@@ -253,8 +254,8 @@ const Rooms = () => {
         }, 1500);
       })
       .catch((err) => {
-        console.log("error",err)
-        toast.error(err?.response?.data?.error?.message);
+        console.log("error", err);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
@@ -291,7 +292,7 @@ const Rooms = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
@@ -385,7 +386,7 @@ const Rooms = () => {
         <Table className="w-full" dataSource={roomType} columns={column} />
       </section>
       <Modal
-        title="Create Room"
+        title="Create Room "
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
@@ -471,7 +472,9 @@ const Rooms = () => {
       >
         <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Room Type Name</label>
+            <label className="w-full text-left font-semibold">
+              Room Type Name
+            </label>
             <Input
               onChange={(e) => {
                 setRoomTypeName(e.target.value);
@@ -492,7 +495,7 @@ const Rooms = () => {
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
-              Salary Per Room
+              Cleaning Price Per Room
             </label>
             <Input
               onChange={(e) => {

@@ -31,11 +31,11 @@ export default function Navigation() {
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
-                  <div className="flex items-center">
+                  <div className="flex items-center w-full justify-between">
                     <div className="flex-shrink-0">
                       <img width={150} src={Logo} alt="The Checker App" />
                     </div>
-                    <div className="hidden md:block">
+                    <div className="hidden md:block ">
                       {Role === "SuperAdmin" ? (
                         <div className="ml-10 flex items-baseline space-x-4">
                           <Link
@@ -50,12 +50,12 @@ export default function Navigation() {
                           >
                             Hotels
                           </Link>
-                          <Link
+                          {/* <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                             to={"/companies"}
                           >
                             Companies
-                          </Link>
+                          </Link> */}
                           <button
                             className="text-white bg-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                             onClick={() => {
@@ -66,6 +66,18 @@ export default function Navigation() {
                             Sign Out
                           </button>
                         </div>
+                      ) : Role === "Cleaner" ? (
+                        <>
+                          <button
+                            className="text-white bg-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                            onClick={() => {
+                              localStorage.clear();
+                              navigate("/login");
+                            }}
+                          >
+                            Sign Out
+                          </button>
+                        </>
                       ) : (
                         <div className="ml-10 flex items-baseline space-x-4">
                           <Link
@@ -75,6 +87,14 @@ export default function Navigation() {
                           >
                             Receptions
                           </Link>
+                          <Link
+                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                            to={"/reports"}
+                            onClick={() => {}}
+                          >
+                            Reports
+                          </Link>
+
                           <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                             to={"/levels"}

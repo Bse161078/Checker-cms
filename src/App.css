@@ -1,0 +1,49 @@
+.ant-tabs >div>.ant-tabs-nav .ant-tabs-nav-wrap .align-right-tab{
+  display: flex;
+  align-items: flex-end;
+
+  justify-content: end;
+
+}
+.align-right-tab.ant-tabs >.ant-tabs-nav .ant-tabs-nav-wrap, :where(.css-dev-only-do-not-override-1n7nwfa).ant-tabs >div>.ant-tabs-nav .ant-tabs-nav-wrap{
+  justify-content: end;
+
+}
+:where(.css-dev-only-do-not-override-1n7nwfa).ant-tabs-card >.ant-tabs-nav .ant-tabs-tab-active, :where(.css-dev-only-do-not-override-1n7nwfa).ant-tabs-card >div>.ant-tabs-nav .ant-tabs-tab-active {
+  color: #0BBBEF;
+  font-size: 1rem;
+  background: #ffffff;
+  border: 1px solid #0BBBEF;
+}
+.fs-bl-20{
+  color: #0BBBEF;
+
+  font-size: 18px;
+}
+.align-right-tab h4{
+  font-size: 2rem;
+  font-weight: bold;
+}
+.bgCard{
+  background: #FFFFFF;
+box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.04);
+border-radius: 10px;
+}
+.blackProgress .ant-progress-bg{
+  height:40px !important;
+  background-color: black;
+}
+.redProgress .ant-progress-bg{
+background-color: #EB5757;
+height:40px !important;
+
+}
+.greenProgress .ant-progress-bg{
+  background-color: #27AE60;
+  height:40px !important;
+
+}
+.container{
+  width: 80%;
+  margin: auto;
+}
