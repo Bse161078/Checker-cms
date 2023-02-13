@@ -17,9 +17,7 @@ const Login = () => {
         password: values.password,
       })
       .then((res) => {
-        console.log(res.data)
         localStorage.setItem("Token", res?.data?.data?.loginResult?.accessToken);
-        console.log(res?.data?.data?.loginResult?.accessToken)
         localStorage.setItem("Role", res?.data?.data?.loginResult?.role);
         toast("Login Successfull!", {
           icon: "👏",
@@ -39,7 +37,7 @@ const Login = () => {
         setLoading(false);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };

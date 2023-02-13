@@ -15,13 +15,8 @@ const Receptions = () => {
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [img, setImg] = useState()
 
-  const imgFilehandler = (e) => {
-    if (e.target.files.length !== 0) {
-      setImg(e.target.files[0]);
-    }
-  }
+
   const columns = [
     {
       title: "Name",
@@ -98,7 +93,7 @@ const Receptions = () => {
     formData.append('username', username);
     formData.append('password', password);
     formData.append('hotel', "hotel");
-    formData.append('logo', img);
+
     setLoading(true);
     axios
       .post(
@@ -240,15 +235,7 @@ const Receptions = () => {
               placeholder="103"
             />
           </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Logo upload</label>
-            <Input type="file"
-              onChange={(e) => {
-                imgFilehandler(e);
-              }}
-              placeholder="103"
-            />
-          </div>
+          
         </div>
       </Modal>
     </div>
