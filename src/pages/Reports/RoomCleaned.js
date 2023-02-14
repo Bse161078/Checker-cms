@@ -24,14 +24,14 @@ const RoomCleaned = () => {
   useEffect(() => {
     getReports();
   }, []);
-  const filteredRooms = cleaner?.cleanersReport?.reduce((acc, obj) => {
-    obj.rooms.forEach((room) => {
-      if (room.cleaning_status === "CLEANED") {
-        acc.push(room);
+  const filteredRooms = cleaner?.roomsReport?.reduce((acc, obj) => {
+      if (acc.cleaning_status === "CLEANED"||"Cleaned") {
+        acc.push(obj);
       }
-    });
     return acc;
   }, []);
+  console.log(filteredRooms,"cleaners")
+
   const columns = [
     {
       title: "No.",
@@ -46,28 +46,34 @@ const RoomCleaned = () => {
       title: "Room Number",
       dataIndex: "name",
       key: "name",
+      render: (_, i, ind) => {
+        return (
+          <ul>
+              <li>{i?.name}</li>
+            
+          </ul>
+        );
+      },
     },
     {
       title: "Room Cleaners",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
         return (
           <ul>
-            {i?.rooms?.map((el) => (
-              <li>{el?.name}</li>
+               {i?.cleaners?.map((el) => (
+              <span>{el?.fullname+" "}</span>
             ))}
           </ul>
         );
-      },
+        }
     },
     {
       title: "Room Details",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
         return <a href="">Room Details</a>;
       },
     },

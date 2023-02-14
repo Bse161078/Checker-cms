@@ -10,11 +10,7 @@ import { Collapse, theme } from "antd";
 import { Navigate, useNavigate } from "react-router-dom";
 import CleanerNavigation from "./CleanerNavigation";
 const { Panel } = Collapse;
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
+
 const CleanerDaashBoard = () => {
   const { token } = theme.useToken();
   const [Level, setLevel] = useState();
@@ -124,7 +120,7 @@ const CleanerDaashBoard = () => {
                   style={panelStyle}
                 >
                   <div class="flex flex-wrap -mx-1">
-                    {rooms?.map((room, ind) => {
+                    {el?.rooms?.length>0?el.rooms.map((room, ind) => {
                       return (
                         <div
                           class="w-full md:w-1/3 px-2"
@@ -141,8 +137,12 @@ const CleanerDaashBoard = () => {
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+                      )
+                    }):
+                    <span>
+                      No rooms available
+                    </span>
+                    }
                   </div>
                 </Panel>
               );

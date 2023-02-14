@@ -19,6 +19,7 @@ import Damages from "./pages/Reports/Damages";
 import CleanerProfile from "./pages/Reports/CleanerProfile";
 import CleanerDaashBoard from "./components/CleanerDashboad/CleanerDaashBoard";
 import CleanerTime from "./components/CleanerDashboad/CleanerTime";
+import RoomDetails from "./pages/Reports/RoomDetails";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/cleaner-profile" element={<CleanerProfile />} />
         <Route path="/cleaner-dashboard" element={<CleanerDaashBoard />} />
         <Route path="/cleaner-time" element={<CleanerTime />} />
+        <Route path="/room-details" element={<RoomDetails />} />
 
         <Route path="/materials" element={<MaterialList />} />
         <Route path="/companycheckers" element={<MyCheckers />} />

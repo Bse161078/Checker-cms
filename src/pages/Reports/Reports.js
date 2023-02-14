@@ -18,21 +18,7 @@ const Reports = () => {
   const [cleaner, setCleaner] = useState();
 
   const navigate = useNavigate();
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
-
+  
   const columns = [
     {
       title: "No.",
@@ -47,7 +33,7 @@ const Reports = () => {
       dataIndex: "fullname",
       key: "fullname",
       render: (_, i, ind) => {
-        return <span>{i?.cleaner?.fullname}</span>;
+        return <span>{i?.fullname}</span>;
       },
     },
     {
@@ -55,7 +41,6 @@ const Reports = () => {
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
         return <span>{i?.rooms?.length}</span>;
       },
     },
@@ -77,10 +62,15 @@ const Reports = () => {
       title: "",
       dataIndex: "profile",
       key: "profile",
-      render: (_, record) => (
-        <Space size="middle">
+      render: (_, record,index) => (
+        
+        <Space size="middle" onClick={()=>{
+          
+          navigate(`/cleaner-profile`,{state:{cleanerIndex:index}})
+        }}>
           <a>View Profile</a>
         </Space>
+        
       ),
     },
   ];
@@ -157,7 +147,7 @@ const Reports = () => {
                     class="bgCard p-4"
                     onClick={() => navigate("/cleaningStatus")}
                   >
-                    <div className="flex text-lg font-bold ">
+                    <div className="flex text-lg text-green-500 font-bold ">
                       <div style={{ minWidth: "170px" }}>In Progress </div>
 
                       <Progress
@@ -167,7 +157,7 @@ const Reports = () => {
                         style={{ height: "40px" }}
                       />
                     </div>
-                    <div className="flex text-lg font-bold ">
+                    <div className="flex text-lg text-blue-500 font-bold ">
                       <div style={{ minWidth: "170px" }}>Cleaned </div>
 
                       <Progress
@@ -177,7 +167,7 @@ const Reports = () => {
                         style={{ height: "40px" }}
                       />
                     </div>
-                    <div className="flex text-lg font-bold ">
+                    <div className="flex text-lg text-red-500 font-bold ">
                       <div style={{ minWidth: "170px" }}>Not Cleaned </div>
 
                       <Progress
@@ -187,14 +177,13 @@ const Reports = () => {
                         style={{ height: "40px" }}
                       />
                     </div>
-                    <p className="text-right">Number of rooms</p>
                   </div>
                 </div>
                 <div class="w-full md:w-1/2 px-2">
-                  <p className="font-bold text-lg">Rooms: Damages</p>
+                  <p className="font-bold  text-lg">Rooms: Damages</p>
                   <br />
                   <div class="bgCard p-4">
-                    <div className="flex text-lg font-bold ">
+                    <div className="flex text-lg text-green-500 font-bold ">
                       <div style={{ minWidth: "170px" }}>No Damages</div>
 
                       <Progress
@@ -204,7 +193,7 @@ const Reports = () => {
                         style={{ height: "40px" }}
                       />
                     </div>
-                    <div className="flex text-lg font-bold ">
+                    <div className="flex text-lg text-red-500 font-bold ">
                       <div style={{ minWidth: "170px" }}>Damaged </div>
 
                       <Progress

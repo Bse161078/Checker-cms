@@ -40,17 +40,25 @@ const CleaningStatus = () => {
       title: "Room Number",
       dataIndex: "name",
       key: "name",
+      render: (_, i, ind) => {
+        return (
+          <ul>
+              <span>{i?.name}</span>
+              
+          </ul>
+        );
+      },
     },
     {
       title: "Room Cleaners",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
+        console.log(i, "room");
         return (
           <ul>
-            {i?.rooms?.map((el) => (
-              <li>{el?.name}</li>
+            {i?.cleaners?.map((el) => (
+              <span>{el?.fullname+" "}</span>
             ))}
           </ul>
         );
@@ -61,30 +69,39 @@ const CleaningStatus = () => {
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
         return <a href="">Room Details</a>;
       },
     },
   ];
-  const filteredRoomsInprogress = cleaner?.cleanersReport?.reduce(
+  const filteredRoomsInprogress = cleaner?.roomsReport?.reduce(
     (acc, obj) => {
-      obj.rooms.forEach((room) => {
-        if (room.cleaning_status === "IN_PROGRESS") {
-          acc.push(room);
+        if (obj.cleaning_status === "IN_PROGRESS") {
+          acc.push(obj);
         }
-      });
+    
       return acc;
     },
     []
   );
-  const filteredRoomsCLEANED = cleaner?.cleanersReport?.reduce((acc, obj) => {
-    obj.rooms.forEach((room) => {
-      if (room.cleaning_status === "CLEANED") {
-        acc.push(room);
+  const filteredRoomsNotCleaned = cleaner?.roomsReport?.reduce(
+    (acc, obj) => {
+      
+        if (obj.cleaning_status === "NotCleaned") {
+          acc.push(obj);
+        }
+      return acc;
+    },
+    []
+  );
+  const filteredRoomsCLEANED = cleaner?.roomsReport?.reduce((acc, obj) => {
+    
+      if (obj.cleaning_status === "CLEANED"||"Cleaned") {
+        acc.push(obj);
       }
-    });
+  
     return acc;
   }, []);
+console.log('filteredRoomsCLEANED',filteredRoomsCLEANED)
   const getReports = () => {
     axios
       .get(`${BASEURL}/room/report`, {
@@ -93,7 +110,6 @@ const CleaningStatus = () => {
         },
       })
       .then((response) => {
-        console.log({ response });
         setCleaner(response.data.data);
         // setLevel(response?.data?.data?.levels);
       });
@@ -173,7 +189,7 @@ const CleaningStatus = () => {
             </div>
           </div>
           <br />
-          <p className="text-lg font-bold">In Progress</p>
+          <p className="text-lg text-green-500 font-bold">In Progress</p>
 
           <br />
 
@@ -183,11 +199,19 @@ const CleaningStatus = () => {
             columns={columns}
           />
           <br />
-          <p className="text-lg text-green-500 font-bold">Cleaned</p>
+          <p className="text-lg text-blue-500 font-bold">Cleaned</p>
           <br />
           <Table
             className="w-full"
             dataSource={filteredRoomsCLEANED}
+            columns={columns}
+          />
+          <br />
+          <p className="text-lg text-red-500 font-bold">Not Cleaned</p>
+          <br />
+          <Table
+            className="w-full"
+            dataSource={filteredRoomsNotCleaned}
             columns={columns}
           />
         </div>
