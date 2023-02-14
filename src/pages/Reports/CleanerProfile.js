@@ -16,21 +16,18 @@ const CleanerProfile = (props) => {
   const navigate = useNavigate();
   const Token = localStorage.getItem("Token");
   const [cleaners,setCleaner] = useState();
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
+  const filteredRoomsCleaned = cleaners?.roomsReport?.reduce(
+    (acc, obj) => {
+        if (obj.cleaning_status === "Cleaned"||"CLEANED") {
+          acc.push(obj);
+        }
+    
+      return acc;
     },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
+    []
+  );
   const getReports = () => {
+    
     axios
       .get(`${BASEURL}/room/report`, {
         headers: {
@@ -45,19 +42,28 @@ const CleanerProfile = (props) => {
   useEffect(() => {
     getReports();
   }, []);
+
   const columns = [
     {
       title: "No.",
       dataIndex: "name",
       key: "name",
-      render: () => {
-        return <span>0</span>;
+      render: (_, i, ind) => {
+        return <span>{ind}</span>;
       },
     },
     {
       title: "Room Number",
       dataIndex: "age",
       key: "age",
+      render: (_, i, ind) => {
+        return (
+          <ul>
+            {i?.rooms?.map((el) => (
+              <span>{el?.name+" "}</span>
+            ))}
+          </ul>
+        );}
     },
 
     {
@@ -131,7 +137,7 @@ const CleanerProfile = (props) => {
 
             <Table
               className="w-full"
-              dataSource={dataSource}
+              dataSource={filteredRoomsCleaned}
               columns={columns}
             />
           </div>
@@ -141,7 +147,7 @@ const CleanerProfile = (props) => {
 
             <Table
               className="w-full"
-              dataSource={dataSource}
+              dataSource={filteredRoomsCleaned}
               columns={columns}
             />
           </div>
