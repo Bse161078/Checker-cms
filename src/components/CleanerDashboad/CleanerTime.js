@@ -9,6 +9,7 @@ import { CaretRightOutlined } from "@ant-design/icons";
 import { Collapse, theme } from "antd";
 import { Navigate, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import CleanerNavigation from "./CleanerNavigation";
 const { Panel } = Collapse;
 const text = `
   A dog is a type of domesticated animal.
@@ -119,6 +120,7 @@ const CleanerTime = () => {
         }
       )
       .then((res) => {
+        navigate("/cleaner-dashboard");
         toast("Timer Pause Successfully!", {
           icon: "👏",
           style: {
@@ -196,7 +198,8 @@ const CleanerTime = () => {
   }, []);
   return (
     <div className="flex flex-col justify-center items-center w-full">
-      <Navigation />
+      <CleanerNavigation user={user} />
+
       <div className="w-full">
         <div className="flex items-center justify-center  mt-8">
           <Avatar
@@ -213,19 +216,34 @@ const CleanerTime = () => {
             {seconds < 10 ? `0${seconds}` : seconds}
           </h2>
           {/* </Col> */}
-          <Row gutter={16}>
-            <Col span={8}>
-              {isRunning === false && (
-                <Button onClick={handleStart}>Start</Button>
-              )}
-            </Col>
-            <Col span={8}>
-              <Button onClick={handlePause}>Pause</Button>
-            </Col>
-            <Col span={8}>
-              <Button onClick={handleReset}>Cleaned</Button>
-            </Col>
-          </Row>
+          <div className="container text-center mt-4">
+            {isRunning === false && (
+              <Button
+                className="lg-button bg-green-100 text-green-500 px-2 py-2 rounded-md "
+                onClick={handleStart}
+              >
+                Start Cleaning{" "}
+              </Button>
+            )}
+            <br />
+            {isRunning === true && (
+              <Button
+                className="lg-button bg-green-100 text-green-500 px-2 py-2 rounded-md"
+                onClick={handlePause}
+              >
+                Pause Cleaning
+              </Button>
+            )}
+            <br />
+            {isRunning === true && (
+              <Button
+                className="lg-button bg-red-100 text-red-500 px-2 py-2 rounded-md"
+                onClick={handleReset}
+              >
+                End Cleaning
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
