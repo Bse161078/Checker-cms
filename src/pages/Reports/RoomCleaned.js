@@ -2,12 +2,14 @@ import { Space, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import Navigation from "../../components/Navigation";
 import { BASEURL } from "../../constants";
 
 const RoomCleaned = () => {
   const [cleaner, setCleaner] = useState();
   const Token = localStorage.getItem("Token");
+  const navigate = useNavigate();
   const getReports = () => {
     axios
       .get(`${BASEURL}/room/report`, {
@@ -16,6 +18,7 @@ const RoomCleaned = () => {
         },
       })
       .then((response) => {
+        console.log(response);
         setCleaner(response.data.data);
         // setLevel(response?.data?.data?.levels);
       });
@@ -25,12 +28,11 @@ const RoomCleaned = () => {
     getReports();
   }, []);
   const filteredRooms = cleaner?.roomsReport?.reduce((acc, obj) => {
-      if (acc.cleaning_status === "CLEANED"||"Cleaned") {
-        acc.push(obj);
-      }
+    if (acc.cleaning_status === "CLEANED" || "Cleaned") {
+      acc.push(obj);
+    }
     return acc;
   }, []);
-  console.log(filteredRooms,"cleaners")
 
   const columns = [
     {
@@ -49,8 +51,7 @@ const RoomCleaned = () => {
       render: (_, i, ind) => {
         return (
           <ul>
-              <li>{i?.name}</li>
-            
+            <li>{i?.name}</li>
           </ul>
         );
       },
@@ -62,19 +63,30 @@ const RoomCleaned = () => {
       render: (_, i, ind) => {
         return (
           <ul>
-               {i?.cleaners?.map((el) => (
-              <span>{el?.fullname+" "}</span>
+            {i?.cleaners?.map((el, ind) => (
+              <span>
+                {el?.fullname}
+                {i?.cleaners.length - 1 !== ind ? "," : null}{" "}
+              </span>
             ))}
           </ul>
         );
-        }
+      },
     },
     {
       title: "Room Details",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        return <a href="">Room Details</a>;
+        return (
+          <span
+            onClick={() =>
+              navigate(`/room-details`, { state: { cleanerRecord: i } })
+            }
+          >
+            Room Details
+          </span>
+        );
       },
     },
   ];

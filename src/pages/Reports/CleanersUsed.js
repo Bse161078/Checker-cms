@@ -55,7 +55,7 @@ const CleanersUsed = () => {
       dataIndex: "fullname",
       key: "fullname",
       render: (_, i, ind) => {
-        return <span>{i?.cleaner?.fullname}</span>;
+        return <span>{i?.fullname}</span>;
       },
     },
     {
@@ -66,8 +66,11 @@ const CleanersUsed = () => {
         console.log(i, "sd");
         return (
           <ul>
-            {i?.rooms?.map((el) => (
-              <li>{el?.name}</li>
+            {i?.rooms?.map((el, ind) => (
+              <span>
+                {el?.name}
+                {i?.rooms.length - 1 !== ind ? "," : null}{" "}
+              </span>
             ))}
           </ul>
         );
