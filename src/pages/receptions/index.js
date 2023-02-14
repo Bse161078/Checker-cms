@@ -15,8 +15,13 @@ const Receptions = () => {
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [img, setImg] = useState();
 
-
+  const imgFilehandler = (e) => {
+    if (e.target.files.length !== 0) {
+      setImg(e.target.files[0]);
+    }
+  };
   const columns = [
     {
       title: "Name",
@@ -61,7 +66,7 @@ const Receptions = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${BASEURL}/level/${id}`, {
+      .delete(`${BASEURL}/reception/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -89,22 +94,18 @@ const Receptions = () => {
 
   const CreateLevel = () => {
     const formData = new FormData();
-    formData.append('fullname', fullName);
-    formData.append('username', username);
-    formData.append('password', password);
-    formData.append('hotel', "hotel");
-
+    formData.append("fullname", fullName);
+    formData.append("username", username);
+    formData.append("password", password);
+    // formData.append("hotel", localStorage.getItem("HotelID"));
+    // formData.append("logo", img);
     setLoading(true);
     axios
-      .post(
-        `${BASEURL}/hotel/create-hotel-reception`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+      .post(`${BASEURL}/hotel/create-hotel-reception`, formData, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
       .then((res) => {
         toast("Created Successfully!", {
           icon: "👏",
@@ -121,13 +122,13 @@ const Receptions = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
 
   useEffect(() => {
-      IsImLoggedIn();
+    IsImLoggedIn();
     getReceptions();
   }, []);
 
@@ -136,7 +137,7 @@ const Receptions = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  
+
   const HotelID = localStorage.getItem("HotelID");
 
   const getReceptions = () => {
@@ -147,7 +148,11 @@ const Receptions = () => {
         },
       })
       .then((response) => {
+        console.log(response);
         setUsers(response?.data?.data?.receptions);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -211,6 +216,7 @@ const Receptions = () => {
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">Full Name</label>
             <Input
+              minLength={5}
               onChange={(e) => {
                 setFullName(e.target.value);
               }}
@@ -220,6 +226,7 @@ const Receptions = () => {
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">User Name</label>
             <Input
+              minLength={5}
               onChange={(e) => {
                 setUserName(e.target.value);
               }}
@@ -229,13 +236,25 @@ const Receptions = () => {
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">Password</label>
             <Input
+              minLength={8}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
               placeholder="103"
             />
           </div>
-          
+          {/* <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Logo uploa dsd
+            </label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                imgFilehandler(e);
+              }}
+              placeholder="103"
+            />
+          </div> */}
         </div>
       </Modal>
     </div>

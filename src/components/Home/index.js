@@ -14,8 +14,8 @@ const Home = () => {
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [hotelName,setHotelName] = useState();
-  const [img,setImg] = useState();
+  const [hotelName, setHotelName] = useState();
+  const [img, setImg] = useState();
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
@@ -90,24 +90,20 @@ const Home = () => {
 
   const CreateHotelUserHandler = () => {
     const formData = new FormData();
-    formData.append('fullname', fullName);
-    formData.append('username', username);
-    formData.append('password', password);
-    formData.append('email', email);
-    formData.append('hotel_name', "Meriott");
-    formData.append('avatar', img);
+    formData.append("fullname", fullName);
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("email", email);
+    formData.append("hotel_name", "Meriott");
+    formData.append("avatar", img);
 
     setLoading(true);
     axios
-      .post(
-        `${BASEURL}/hotel`,
-       formData,
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+      .post(`${BASEURL}/hotel`, formData, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
       .then((res) => {
         toast("Created Successfully!", {
           icon: "👏",
@@ -124,7 +120,7 @@ const Home = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
@@ -162,7 +158,7 @@ const Home = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
@@ -170,8 +166,8 @@ const Home = () => {
     if (e.target.files.length !== 0) {
       setImg(e.target.files[0]);
     }
-    console.log(img,"Img")
-  }
+    console.log(img, "Img");
+  };
   const IsImLoggedIn = () => {
     axios
       .get(`${BASEURL}/auth/check-login`, {
@@ -181,17 +177,18 @@ const Home = () => {
       })
       .then((response) => {
         if (response?.data?.statusCode === 200 || 201) {
-          navigate('/')
+          navigate("/");
         } else {
-          navigate('/login')
+          navigate("/login");
         }
-      }).catch((err) => {
-        navigate('/login')
+      })
+      .catch((err) => {
+        navigate("/login");
       });
   };
 
   useEffect(() => {
-    IsImLoggedIn()
+    IsImLoggedIn();
     getUsers();
   }, []);
 
@@ -238,14 +235,14 @@ const Home = () => {
             >
               Create Hotel
             </button>
-            <button
+            {/* <button
               onClick={() => {
                 setIsCompanyModalOpen(true);
               }}
               className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
             >
               Create Company
-            </button>
+            </button> */}
           </div>
         </div>
         <Table className="w-full" dataSource={users} columns={columns} />
@@ -290,7 +287,8 @@ const Home = () => {
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">User Name</label>
-            <Input type="file"
+            <Input
+              type="file"
               onChange={(e) => {
                 imgFilehandler(e);
               }}
@@ -325,12 +323,15 @@ const Home = () => {
         open={isCompanyModalOpen}
         onOk={handleOk}
         onCancel={() => {
-          setIsCompanyModalOpen(false)
+          setIsCompanyModalOpen(false);
         }}
         footer={[
-          <Button key="back" onClick={() => {
-            setIsCompanyModalOpen(false)
-          }}>
+          <Button
+            key="back"
+            onClick={() => {
+              setIsCompanyModalOpen(false);
+            }}
+          >
             Return
           </Button>,
           <Button
@@ -360,6 +361,30 @@ const Home = () => {
                 setCompanyUserName(e.target.value);
               }}
               placeholder="thisisjack"
+<<<<<<< HEAD
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Password</label>
+            <Input.Password
+              onChange={(e) => {
+                setCompanyPassword(e.target.value);
+              }}
+              placeholder="input password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Email</label>
+            <Input
+              onChange={(e) => {
+                setCompanyEmail(e.target.value);
+              }}
+              placeholder="sample@gmail.com"
+=======
+>>>>>>> parent of 0a0a772 (feat: add titles and some pages done)
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">

@@ -1,35 +1,27 @@
 /* eslint-disable no-restricted-globals */
-import {
-  Button,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  Space,
-  Table,
-  Tag,
-} from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
+import { Space, Table, Tag, Modal, Button, Input } from "antd";
 import axios from "axios";
 import { BASEURL } from "../../constants";
-import { Toaster, toast } from "react-hot-toast";
 import Navigation from "../../components/Navigation";
+import { Toaster, toast } from "react-hot-toast";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
-const CompaniesList = () => {
+const Cleaners = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCleanerModalOpen, setIsCleanerModalOpen] = useState(false);
+  const [isDescModalOpen, setIsDescModalOpen] = useState(false);
   const [users, setUsers] = useState();
+  const [cleaner, setCleaner] = useState();
   const [loading, setLoading] = useState(false);
   const [hotelID, setHotelID] = useState();
-  const [fullName, setFullName] = useState();
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
-  const [CleaneFullName, setCleanerFullName] = useState();
+  const [CleanerFullName, setCleanerFullName] = useState();
   const [CleanerUsername, setCleanerUserName] = useState();
+  const [SalaryPerRoom, setSalaryPerRoom] = useState();
+
   const [CleanerPassword, setCleanerPassword] = useState();
-  const [CleanerSalary, setCleanerSalary] = useState();
-  const [CleanerRoomCount, setCleanerRoomCountForClean] = useState();
+  const [CleanerRoomCount, setCleanerRoomCountForClean] = useState(0);
+  const [img, setImg] = useState();
 
   const columns = [
     {
@@ -39,12 +31,18 @@ const CompaniesList = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Tags",
+      title: "Full Name",
+      dataIndex: "fullname",
+      key: "fullname",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Rooms To Clean Per Day",
       key: "tags",
-      dataIndex: "role",
-      render: (_, { role }) => (
+      dataIndex: "roomCountForCleanEachDay ",
+      render: (_, { roomCountForCleanEachDay }) => (
         <>
-          <Tag color={"blue"}>{role}</Tag>
+          <Tag color={"blue"}>{roomCountForCleanEachDay}</Tag>
         </>
       ),
     },
@@ -64,28 +62,25 @@ const CompaniesList = () => {
           <button
             className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
             onClick={() => {
-              setIsModalOpen(true);
-              setHotelID(_id);
+              setIsDescModalOpen(true);
+              getCleanerById(_id);
             }}
           >
-            Create Checker
-          </button>
-          <button
-            className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
-            onClick={() => {
-              setIsCleanerModalOpen(true);
-            }}
-          >
-            Create Cleaner
+            Report
           </button>
         </Space>
       ),
     },
   ];
-
+  const imgFilehandler = (e) => {
+    if (e.target.files.length !== 0) {
+      setImg(e.target.files[0]);
+    }
+    console.log(img, "Img");
+  };
   const handleDelete = (id) => {
     axios
-      .delete(`${BASEURL}/company/${id}`, {
+      .delete(`${BASEURL}/cleaner/${id}`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -111,63 +106,22 @@ const CompaniesList = () => {
 
   const Token = localStorage.getItem("Token");
 
-  const CreateChecker = () => {
-    setLoading(true);
-    axios
-      .post(
-        `${BASEURL}/company/create-company-checker`,
-        {
-          fullname: fullName,
-          username: username,
-          password: password,
-          hotelID: hotelID,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
-      .then((res) => {
-        toast("Created Successfully!", {
-          icon: "👏",
-          style: {
-            borderRadius: "4px",
-            background: "#333",
-            color: "#fff",
-          },
-        });
-        setLoading(false);
-        setIsModalOpen(false);
-        window.setTimeout(function () {
-          location.reload();
-        }, 1500);
-      })
-      .catch((err) => {
-        toast.error(err?.message);
-        setLoading(false);
-      });
-  };
-
   const CreateCleaner = () => {
     setLoading(true);
+    const formData = new FormData();
+    formData.append("fullname", CleanerFullName);
+    formData.append("username", CleanerUsername);
+    formData.append("password", CleanerPassword);
+    formData.append("avatar", img);
+    formData.append("roomCountForCleanEachDay", CleanerRoomCount);
+    formData.append("salaryPerRoom", SalaryPerRoom);
+
     axios
-      .post(
-        `${BASEURL}/company/create-company-cleaner`,
-        {
-          fullname: CleaneFullName,
-          username: CleanerUsername,
-          password: CleanerPassword,
-          salaryPerRoom: CleanerSalary,
-          roomCountForCleanEachDay: CleanerRoomCount,
-          hotelID: hotelID,
+      .post(`${BASEURL}/cleaner`, formData, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+      })
       .then((res) => {
         toast("Created Successfully!", {
           icon: "👏",
@@ -190,22 +144,30 @@ const CompaniesList = () => {
   };
 
   useEffect(() => {
-    getUsers();
+    getCleaners();
   }, []);
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const getUsers = () => {
+  const getCleaners = () => {
     axios
-      .get(`${BASEURL}/company`, {
+      .get(`${BASEURL}/cleaner`, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
       })
       .then((response) => {
-        setUsers(response?.data?.data?.companies);
+        setUsers(response?.data?.data?.cleaners);
+      });
+  };
+
+  const getCleanerById = (id) => {
+    axios
+      .get(`${BASEURL}/cleaner/${id}`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        setCleaner(response?.data?.data?.cleaner);
       });
   };
 
@@ -218,69 +180,20 @@ const CompaniesList = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">Company List</h2>
-          {/* <button
-                onClick={showModal}
-                className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
-              >
-                Create User
-              </button> */}
+          <h2 className="text-2xl text-black font-medium">Cleaners List</h2>
+          <button
+            onClick={() => {
+              setIsCleanerModalOpen(true);
+            }}
+            className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
+          >
+            Create Cleaner
+          </button>
         </div>
         <Table className="w-full" dataSource={users} columns={columns} />
       </section>
       <Modal
-        title="Create Checker"
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="back" onClick={handleCancel}>
-            Return
-          </Button>,
-          <Button
-            className="bg-blue-400 text-white hover:bg-white"
-            key="link"
-            loading={loading}
-            onClick={CreateChecker}
-          >
-            Create
-          </Button>,
-        ]}
-      >
-        <div className="flex flex-col justify-center items-center gap-y-4">
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Full Name</label>
-            <Input
-              onChange={(e) => {
-                setFullName(e.target.value);
-              }}
-              placeholder="jack grilish"
-            />
-          </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">User Name</label>
-            <Input
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              placeholder="thisisjack"
-            />
-          </div>
-          <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Password</label>
-            <Input.Password
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              placeholder="input password"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-          </div>
-        </div>
-      </Modal>
-      <Modal
-        title="Create Cleaner "
+        title="Create Cleaner"
         open={isCleanerModalOpen}
         onCancel={() => {
           setIsCleanerModalOpen(false);
@@ -320,7 +233,18 @@ const CompaniesList = () => {
               onChange={(e) => {
                 setCleanerUserName(e.target.value);
               }}
-              placeholder="thisisjack"
+              placeholder="User Name"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Cleaning Price per Room
+            </label>
+            <Input
+              onChange={(e) => {
+                setSalaryPerRoom(e.target.value);
+              }}
+              placeholder="Cleaning Price"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
@@ -337,27 +261,63 @@ const CompaniesList = () => {
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
-              Cleaning Price Per Room
+              Rooms He Should Clean Per Day
             </label>
-            <InputNumber
-              min={1}
-              defaultValue={1}
+            <Input
               onChange={(e) => {
-                setCleanerSalary(e.target.value);
+                setCleanerRoomCountForClean(e.target.value);
               }}
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
-              Rooms He Should Clean Per Day
+              Cleaner Avatar
             </label>
-            <InputNumber
-              min={1}
-              defaultValue={1}
+            <Input
+              type="file"
               onChange={(e) => {
-                setCleanerRoomCountForClean(e.target.value);
+                imgFilehandler(e);
               }}
+              placeholder="103"
             />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Cleaner Report"
+        open={isDescModalOpen}
+        onCancel={() => {
+          setIsDescModalOpen(false);
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setIsDescModalOpen(false);
+            }}
+          >
+            Return
+          </Button>,
+        ]}
+      >
+        <div className="grid grid-cols-2 gap-y-10 w-full my-10">
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">Full Name :</h3>
+            <p className="text-gray-500 text-lg">{cleaner?.fullname}</p>
+          </div>
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">Bill :</h3>
+            <p className="text-gray-500 text-lg">{cleaner?.billAmount}</p>
+          </div>
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">Room Not Cleaned :</h3>
+            <p className="text-gray-500 text-lg">
+              {cleaner?.roomNotCleanedCount}
+            </p>
+          </div>
+          <div className="flex justify-start items-start gap-x-3">
+            <h3 className="text-lg font-medium">Room Cleaned :</h3>
+            <p className="text-gray-500 text-lg">{cleaner?.roomCleanedCount}</p>
           </div>
         </div>
       </Modal>
@@ -365,4 +325,4 @@ const CompaniesList = () => {
   );
 };
 
-export default CompaniesList;
+export default Cleaners;

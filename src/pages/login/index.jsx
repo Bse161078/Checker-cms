@@ -8,16 +8,22 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [loading, setLoading] = useState();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const LoginHandler = (values) => {
+    debugger;
     axios
       .post(`${BASEURL}/auth/login`, {
         username: values.username,
         password: values.password,
       })
       .then((res) => {
-        localStorage.setItem("Token", res?.data?.data?.loginResult?.accessToken);
+        console.log(res.data);
+        localStorage.setItem(
+          "Token",
+          res?.data?.data?.loginResult?.accessToken
+        );
+        console.log(res?.data?.data?.loginResult?.accessToken);
         localStorage.setItem("Role", res?.data?.data?.loginResult?.role);
         toast("Login Successfull!", {
           icon: "👏",
@@ -27,12 +33,14 @@ const Login = () => {
             color: "#fff",
           },
         });
-        if (res?.data?.data?.loginResult?.role === 'SuperAdmin') {
-          navigate('/')
-        } else if (res?.data?.data?.loginResult?.role === 'HotelAdmin') {
-          navigate('/levels')
-        } else if (res?.data?.data?.loginResult?.role === 'CompanyAdmin') {
-          navigate('/levels')
+        if (res?.data?.data?.loginResult?.role === "SuperAdmin") {
+          navigate("/");
+        } else if (res?.data?.data?.loginResult?.role === "HotelAdmin") {
+          navigate("/levels");
+        } else if (res?.data?.data?.loginResult?.role === "CompanyAdmin") {
+          navigate("/levels");
+        } else if (res?.data?.data?.loginResult?.role === "Cleaner") {
+          navigate("/cleaner-dashboard");
         }
         setLoading(false);
       })

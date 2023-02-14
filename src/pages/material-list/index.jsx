@@ -120,7 +120,7 @@ const MaterialList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };

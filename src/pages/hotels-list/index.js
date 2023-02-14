@@ -1,5 +1,14 @@
 /* eslint-disable no-restricted-globals */
-import { Button, Input, InputNumber, Modal, Select, Space, Table, Tag } from "antd";
+import {
+  Button,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Space,
+  Table,
+  Tag,
+} from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -11,6 +20,8 @@ const HotelsList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCleanerModalOpen, setIsCleanerModalOpen] = useState(false);
   const [isReceptionModalOpen, setIsReceptionModalOpen] = useState(false);
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
   const [hotelID, setHotelID] = useState();
@@ -19,13 +30,40 @@ const HotelsList = () => {
   const [password, setPassword] = useState();
   const [CleanerFullName, setCleanerFullName] = useState();
   const [CleanerUsername, setCleanerUserName] = useState();
+  const [img, setImg] = useState();
+  const [RoomTypeNameDe, setRoomTypeNameDe] = useState();
+  const [RoomTypeName, setRoomTypeName] = useState();
+  const [RoomTypes, setRoomType] = useState();
+  // const [RoomTypes, SetRoomType] = useState();
+
   const [CleanerPassword, setCleanerPassword] = useState();
   const [CleanerSalary, setCleanerSalary] = useState();
   const [CleanerRoomCount, setCleanerRoomCountForClean] = useState();
   const [ReceptionFullName, setReception] = useState();
   const [ReceptionUsername, setReceptionUserName] = useState();
   const [ReceptionPassword, setReceptionPassword] = useState();
-  
+  const [roomName, setRoomName] = useState();
+  const [roomName_de, setRoomName_de] = useState();
+  const [roomLevel, setRoomLevel] = useState();
+  const [Level, setLevel] = useState();
+  const [Levels, setLevels] = useState();
+  const [roomType, SetRoomType] = useState();
+
+  const handleChange = (value) => {
+    SetRoomType(value);
+    console.log(roomType, "roomtype");
+  };
+  const getRoomType = () => {
+    axios
+      .get(`${BASEURL}/room-type`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        setRoomType(response?.data?.data?.roomTypes);
+      });
+  };
   const columns = [
     {
       title: "Username",
@@ -48,6 +86,7 @@ const HotelsList = () => {
       key: "action",
       render: (_, { _id }) => (
         <Space>
+          {console.log(_, "sds")}
           <button
             className="bg-red-100 text-red-500 px-2 py-2 rounded-md"
             onClick={() => {
@@ -68,6 +107,7 @@ const HotelsList = () => {
           <button
             className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
             onClick={() => {
+              setHotelID(_id);
               setIsCleanerModalOpen(true);
             }}
           >
@@ -76,11 +116,21 @@ const HotelsList = () => {
           <button
             className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
             onClick={() => {
-              setIsReceptionModalOpen(true)
+              setIsReceptionModalOpen(true);
             }}
           >
             Create Reception
           </button>
+          {/* <button
+            style={{ backgroundColor: "rgb(226 204 181)", color: "#964B00" }}
+            className="   px-2 py-2 rounded-md"
+            onClick={() => {
+              setIsRoomModalOpen(true);
+              setHotelID(_id);
+            }}
+          >
+            Create Room
+          </button> */}
         </Space>
       ),
     },
@@ -107,7 +157,6 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch(function (error) {
-        console.log(error);
         toast.error(error.response.data.errors.title);
       });
   };
@@ -116,21 +165,19 @@ const HotelsList = () => {
 
   const CreateChecker = () => {
     setLoading(true);
+    const formData = new FormData();
+    formData.append("fullname", fullName);
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("avatar", img);
+    formData.append("hotelID", hotelID);
+
     axios
-      .post(
-        `${BASEURL}/hotel/create-hotel-checker`,
-        {
-          fullname: fullName,
-          username: username,
-          password: password,
-          hotelID: hotelID,
+      .post(`${BASEURL}/hotel/create-hotel-checker`, formData, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        }
-      )
+      })
       .then((res) => {
         toast("Created Successfully!", {
           icon: "👏",
@@ -147,23 +194,65 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
 
   const CreateCleaner = () => {
     setLoading(true);
+    const fromData = new FormData();
+    const formData = new FormData();
+    formData.append("fullname", CleanerFullName);
+    formData.append("username", CleanerUsername);
+    formData.append("password", CleanerPassword);
+    formData.append("avatar", img);
+    formData.append("roomCountForCleanEachDay", CleanerRoomCount);
+    formData.append("hotelID", hotelID);
+    formData.append("salaryPerRoom", CleanerRoomCount);
+
+    axios
+      .post(`${BASEURL}/hotel/create-hotel-cleaner`, formData, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((res) => {
+        toast("Created Successfully!", {
+          icon: "👏",
+          style: {
+            borderRadius: "4px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        setLoading(false);
+        setIsModalOpen(false);
+        window.setTimeout(function () {
+          location.reload();
+        }, 1500);
+      })
+      .catch((err) => {
+        toast.error(err?.message);
+        setLoading(false);
+      });
+  };
+  const handleChanges = (value) => {
+    setLevels(value);
+  };
+
+  const CreateRoom = () => {
+    setLoading(true);
+
     axios
       .post(
-        `${BASEURL}/hotel/create-hotel-cleaner`,
+        `${BASEURL}/room`,
         {
-          fullname: CleanerFullName,
-          username: CleanerUsername,
-          password: CleanerPassword,
-          salaryPerRoom: CleanerSalary,
-          roomCountForCleanEachDay: CleanerRoomCount,
-          hotelID: hotelID,
+          roomType: RoomTypeName,
+          name: roomName,
+          name_de: roomName_de,
+          level: roomLevel,
+          // hotel: hotelID,
         },
         {
           headers: {
@@ -187,13 +276,14 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
 
   const CreateReception = () => {
     setLoading(true);
+
     axios
       .post(
         `${BASEURL}/hotel/create-hotel-reception`,
@@ -201,7 +291,7 @@ const HotelsList = () => {
           fullname: ReceptionFullName,
           username: ReceptionUsername,
           password: ReceptionPassword,
-          hotel: hotelID,
+          // hotel: hotelID,
         },
         {
           headers: {
@@ -225,11 +315,16 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
-
+  const imgFilehandler = (e) => {
+    if (e.target.files.length !== 0) {
+      setImg(e.target.files[0]);
+    }
+    console.log(img, "Img");
+  };
   useEffect(() => {
     getHotels();
   }, []);
@@ -250,6 +345,22 @@ const HotelsList = () => {
       });
   };
 
+  useEffect(() => {
+    // getrooms();
+    getLevel();
+    getRoomType();
+  }, []);
+  const getLevel = () => {
+    axios
+      .get(`${BASEURL}/level`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        setLevel(response?.data?.data?.levels);
+      });
+  };
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <Navigation />
@@ -270,7 +381,7 @@ const HotelsList = () => {
         <Table className="w-full" dataSource={users} columns={columns} />
       </section>
       <Modal
-        title="Create Checker"
+        title="Create Checker "
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
@@ -306,6 +417,7 @@ const HotelsList = () => {
               placeholder="thisisjack"
             />
           </div>
+
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">Password</label>
             <Input.Password
@@ -318,10 +430,23 @@ const HotelsList = () => {
               }
             />
           </div>
+
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Checker Avatar
+            </label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                imgFilehandler(e);
+              }}
+              placeholder="103"
+            />
+          </div>
         </div>
       </Modal>
       <Modal
-        title="Create Cleaner"
+        title="Create Cleaner "
         open={isCleanerModalOpen}
         onCancel={() => {
           setIsCleanerModalOpen(false);
@@ -355,6 +480,7 @@ const HotelsList = () => {
               placeholder="jack grilish"
             />
           </div>
+
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">User Name</label>
             <Input
@@ -378,12 +504,14 @@ const HotelsList = () => {
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
-              Salary Per Room
+              Cleaning Price Per Room
             </label>
-            <InputNumber
+            <Input
+              type="number"
               min={1}
               defaultValue={1}
               onChange={(e) => {
+                debugger;
                 setCleanerSalary(e.target.value);
               }}
             />
@@ -392,12 +520,25 @@ const HotelsList = () => {
             <label className="w-full text-left font-semibold">
               Rooms He Should Clean Per Day
             </label>
-            <InputNumber
+            <Input
+              type="number"
               min={1}
               defaultValue={1}
               onChange={(e) => {
                 setCleanerRoomCountForClean(e.target.value);
               }}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Cleaner Avatar
+            </label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                imgFilehandler(e);
+              }}
+              placeholder="103"
             />
           </div>
         </div>
@@ -456,6 +597,90 @@ const HotelsList = () => {
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
+            />
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Create Room "
+        open={isRoomModalOpen}
+        onCancel={() => {
+          setIsRoomModalOpen(false);
+        }}
+        footer={[
+          <Button
+            key="back"
+            onClick={() => {
+              setIsRoomModalOpen(false);
+            }}
+          >
+            Return
+          </Button>,
+          <Button
+            className="bg-blue-400 text-white hover:bg-white"
+            key="link"
+            loading={loading}
+            onClick={CreateRoom}
+          >
+            Create
+          </Button>,
+        ]}
+      >
+        <div className="flex flex-col justify-center items-center gap-y-4">
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Select Room Type
+            </label>
+            <Select
+              defaultValue="select"
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={roomType?.map((item) => {
+                return { value: item?._id, label: item?.title };
+              })}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Room Name</label>
+            <Input
+              onChange={(e) => {
+                setRoomName(e.target.value);
+              }}
+              placeholder="thisisjack"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Room Name Germany
+            </label>
+            <Input
+              onChange={(e) => {
+                setRoomName_de(e.target.value);
+              }}
+              placeholder="input "
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Room Level</label>
+            <Input
+              onChange={(e) => {
+                setRoomLevel(e.target.value);
+              }}
+              placeholder="input "
+            />
+          </div>
+
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Select Level
+            </label>
+            <Select
+              defaultValue="select"
+              style={{ width: 120 }}
+              onChange={handleChanges}
+              options={Level?.map((item) => {
+                return { value: item?._id, label: item?.title };
+              })}
             />
           </div>
         </div>

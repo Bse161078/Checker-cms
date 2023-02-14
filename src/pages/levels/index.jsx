@@ -133,7 +133,7 @@ const Levels = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
@@ -171,7 +171,7 @@ const Levels = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.error?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };
@@ -221,13 +221,14 @@ const Levels = () => {
       })
       .then((response) => {
         if (response?.data?.statusCode === 200 || 201) {
-          navigate('/levels')
-          localStorage.setItem("HotelID", response?.data?.data?.user?._id)
+          navigate("/levels");
+          localStorage.setItem("HotelID", response?.data?.data?.user?._id);
         } else {
-          navigate('/login')
+          navigate("/login");
         }
-      }).catch((err) => {
-        navigate('/login')
+      })
+      .catch((err) => {
+        navigate("/login");
       });
   };
 
