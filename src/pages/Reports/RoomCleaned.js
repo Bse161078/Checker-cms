@@ -79,13 +79,13 @@ const RoomCleaned = () => {
       key: "address",
       render: (_, i, ind) => {
         return (
-          <span
+          <Space
             onClick={() =>
               navigate(`/room-details`, { state: { cleanerRecord: i } })
             }
           >
-            Room Details
-          </span>
+           <a>Room Details </a> 
+          </Space>
         );
       },
     },

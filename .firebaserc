@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "checker-cms",
+    "checker": "checker-cms"
+  },
+  "targets": {}
+}

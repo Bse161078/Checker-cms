@@ -6,9 +6,11 @@ import { LikeFilled, DislikeFilled } from "@ant-design/icons";
 import axios from "axios";
 import { BASEURL } from "../../constants";
 import { useLocation } from "react-router-dom";
-// import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { useNavigate } from "react-router-dom";
 const RoomDetails = () => {
   const [checkListData, setCheckListData] = useState(null);
+  const [selectedCleaner, setSelectedCleaner] = useState(null);
+  const navigate = useNavigate();
   const columns = [
     {
       title: "",
@@ -17,7 +19,7 @@ const RoomDetails = () => {
       render: (_, row) => {
         return (
           <Space>
-            <Avatar src={BASEURL + "/" + row.avatar} />
+            <Avatar src={BASEURL + "/" + row?.avatar} />
             {/* {row?.fullname} */}
           </Space>
         );
@@ -42,7 +44,10 @@ const RoomDetails = () => {
       dataIndex: "profile",
       key: "profile",
       render: (_, record) => (
-        <Space size="middle">
+        <Space size="middle" onClick={()=>{
+          
+          navigate(`/cleaner-profile`,{state:{cleanerRecord:record}})
+        }}>
           <a>View Profile</a>
         </Space>
       ),
@@ -66,17 +71,39 @@ const RoomDetails = () => {
         // setLevel(response?.data?.data?.levels);
       });
   };
-  console.log(checkListData, "checkListData");
+  console.log(cleanerRecord, "checkListData");
 
   useEffect(() => {
-    cleaner?.cleanersReport?.forEach((report) => {
-      const room = report?.rooms?.find((r) => r._id === cleanerRecord._id);
-      if (room) {
-        setCheckListData(room.mistakes);
-      }
-    });
-  }, []);
+    if (cleaner && cleanerRecord && cleaner.cleanersReport) {
+      cleaner.cleanersReport.forEach((report) => {
+        if (report.rooms) {
+          const room = report.rooms.find((r) => r._id === cleanerRecord._id);
+          if (room && room.mistakes) {
+            setCheckListData(room.mistakes);
+          }
+        }
+      });
+    }
+  }, [cleaner, cleanerRecord]);
+  
+  useEffect(() => {
+    if (cleaner && cleanerRecord && cleaner.cleanersReport) {
+      const selectedCleaners = [];
+      cleaner.cleanersReport.forEach((report) => {
+        if (report.rooms) {
+          const room = report.rooms.find((r) => r._id === cleanerRecord._id);
+          if (room) {
+            console.log("I'm in")
 
+            selectedCleaners.push(report);
+          }
+        }
+      });
+      setSelectedCleaner(selectedCleaners);
+    }
+  }, [cleaner, cleanerRecord]);
+  
+console.log('selectedCleaner',selectedCleaner,cleanerRecord,cleanerRecord?._id)
   useEffect(() => {
     getReports();
   }, []);
@@ -87,7 +114,7 @@ const RoomDetails = () => {
       <br />
       <div className="div" style={{ width: "80%" }}>
         <div style={{ textAlign: "center" }}>
-          {/* <Avatar size={"large"} /> */}
+          {/* <Avatar size={"large"} src={BASEURL + "/" + row.avatar}  /> */}
           <p className="text-md font-bold">Room No.</p>
           <p className="text-lg font-bold">{cleanerRecord.name}</p>
         </div>
@@ -104,7 +131,7 @@ const RoomDetails = () => {
                   className="text-xl "
                   style={{
                     color:
-                      cleanerRecord.cleaning_status === "Damaged"
+                      cleanerRecord?.cleaning_status === "Damaged"
                         ? "red"
                         : "#27AE60",
                   }}
@@ -112,7 +139,7 @@ const RoomDetails = () => {
                   {/* {cleanerRecord.cleaning_status.replace("_", " ")} */}
                   {cleanerRecord.cleaning_status === "Damaged"
                     ? "Damaged"
-                    : cleanerRecord.cleaning_status.replace("_", " ")}
+                    : cleanerRecord?.cleaning_status?.replace("_", " ")}
                 </p>
               </div>
             </div>
@@ -127,12 +154,12 @@ const RoomDetails = () => {
                   className="text-xl "
                   style={{
                     color:
-                      cleanerRecord.cleaning_status === "Damaged"
+                      cleanerRecord?.cleaning_status === "Damaged"
                         ? "red"
                         : "#27AE60",
                   }}
                 >
-                  {cleanerRecord.cleaning_status === "Damaged"
+                  {cleanerRecord?.cleaning_status === "Damaged"
                     ? "Damaged"
                     : "No Damages"}
                 </p>
@@ -147,9 +174,10 @@ const RoomDetails = () => {
 
         <Table
           className="w-full"
-          dataSource={cleanerRecord.cleaners}
+          dataSource={Array.isArray(selectedCleaner) ? selectedCleaner : []}
           columns={columns}
         />
+
         <br />
 
         <p className="text-md font-bold">Checklist</p>
@@ -181,7 +209,7 @@ const RoomDetails = () => {
             </div>
             <img
               style={{ height: 40, width: 50, borderRadius: "6px" }}
-              src=""
+              src={checkListData?BASEURL + "/" + checkListData?.roomIsNotVacuumed?.photos[0]:''}
               alt="..."
             />
           </div>
@@ -190,7 +218,7 @@ const RoomDetails = () => {
             <div className="flex gap-3" style={{ alignItems: "center" }}>
               <span
                 style={{
-                  background: checkListData?.roomIsNotVacuumed?.status
+                  background: checkListData?.damageCausedByGuests?.status
                     ? "#E8F5ED"
                     : "#FBECEC",
 
@@ -202,7 +230,7 @@ const RoomDetails = () => {
                   borderRadius: "6px",
                 }}
               >
-                {checkListData?.roomIsNotVacuumed?.status === true ? (
+                {checkListData?.damageCausedByGuests?.status === true ? (
                   <LikeFilled style={{ color: "#27AE60" }} />
                 ) : (
                   <DislikeFilled style={{ color: "#EB5757" }} />
@@ -212,7 +240,7 @@ const RoomDetails = () => {
             </div>
             <img
               style={{ height: 40, width: 50, borderRadius: "6px" }}
-              src=""
+              src={checkListData?BASEURL + "/" + checkListData?.damageCausedByGuests?.photos[0]:''}
               alt="..."
             />
           </div>
@@ -220,7 +248,7 @@ const RoomDetails = () => {
             <div className="flex gap-3" style={{ alignItems: "center" }}>
               <span
                 style={{
-                  background: checkListData?.roomIsNotVacuumed?.status
+                  background: checkListData?.roomHasStrongStainsThatCanNotBeCleanedByUs?.status
                     ? "#E8F5ED"
                     : "#FBECEC",
 
@@ -232,7 +260,7 @@ const RoomDetails = () => {
                   borderRadius: "6px",
                 }}
               >
-                {checkListData?.roomIsNotVacuumed?.status === true ? (
+                {checkListData?.roomHasStrongStainsThatCanNotBeCleanedByUs?.status === true ? (
                   <LikeFilled style={{ color: "#27AE60" }} />
                 ) : (
                   <DislikeFilled style={{ color: "#EB5757" }} />
@@ -245,7 +273,7 @@ const RoomDetails = () => {
             </div>
             <img
               style={{ height: 40, width: 50, borderRadius: "6px" }}
-              src=""
+              src={checkListData?BASEURL + "/" + checkListData?.roomHasStrongStainsThatCanNotBeCleanedByUs?.photos[0]:''}
               alt="..."
             />
           </div>

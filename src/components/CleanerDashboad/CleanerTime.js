@@ -25,7 +25,7 @@ const CleanerTime = () => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [startTimeId, setStartTimeId] = useState(false);
-
+  const [startCleaning,setStartCleaning] = useState("Start Cleaning")
   const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         // setLoading(false);
       });
   };
@@ -97,11 +97,44 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         // setLoading(false);
       });
   };
+  const handleResume = () => {
+    setIsRunning(true);
 
+    // setTime(0);
+    clearInterval(intervalId);
+    axios
+      .post(
+        `${BASEURL}/room/update-cleaning`,
+        {
+          cleaningHistoryId: startTimeId.data.data.data._id,
+          status: "START",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setStartTimeId(res);
+        toast("Timer Start Successfully!", {
+          icon: "👏",
+          style: {
+            borderRadius: "4px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.errors?.title);
+        // setLoading(false);
+      });
+  };
   const handleReset = () => {
     // setTime(0);
     setIsRunning(false);
@@ -131,7 +164,7 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         // setLoading(false);
       });
   };
@@ -205,7 +238,7 @@ const CleanerTime = () => {
           <Avatar
             style={{ height: "60px", width: "60px" }}
             size={"large"}
-            src={BASEURL + "/" + user?.hotel?.avatar}
+            src={BASEURL + "/" + user?.avatar}
             alt="..."
           />
         </div>
@@ -220,9 +253,17 @@ const CleanerTime = () => {
             {isRunning === false && (
               <Button
                 className="lg-button bg-green-100 text-green-500 px-2 py-2 rounded-md "
-                onClick={handleStart}
+                onClick={() => {
+                  setStartCleaning("Resume Cleaning")
+                  if (startCleaning.includes("Start")) {
+                      handleStart()
+                  } else {
+                    handleResume()
+                  }
+              }}
+              
               >
-                Start Cleaning{" "}
+                {startCleaning}{" "}
               </Button>
             )}
             <br />

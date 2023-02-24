@@ -18,7 +18,7 @@ const Levels = () => {
   const [LevelName, setLevelName] = useState();
   const [RoomNameDe, setRoomNameDe] = useState();
   const [RoomTypes, SetRoomType] = useState();
-  const [Levels, setLevels] = useState();
+  const [price, setPrice] = useState(0);
 
   const handleChange = (value) => {
     SetRoomType(value);
@@ -133,7 +133,7 @@ const Levels = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -147,6 +147,7 @@ const Levels = () => {
           roomType: RoomTypes,
           name: RoomName,
           name_de: RoomNameDe,
+          price:price,
           level: Level,
         },
         {
@@ -171,7 +172,8 @@ const Levels = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        console.log('err',err)
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -325,6 +327,21 @@ const Levels = () => {
                 setRoomNameDe(e.target.value);
               }}
               placeholder="(optional)"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Cleaning Price per Room
+            </label>
+            <Input
+              onChange={(e) => {
+                const value = e.target.value;
+
+                if (/^\d+$/.test(value)) {
+                  setPrice(parseInt(value));
+                }
+              }}
+              placeholder="Required"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">

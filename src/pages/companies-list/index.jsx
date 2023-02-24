@@ -104,7 +104,6 @@ const CompaniesList = () => {
         }, 1500);
       })
       .catch(function (error) {
-        console.log(error);
         toast.error(error.response.data.errors.title);
       });
   };
@@ -115,7 +114,7 @@ const CompaniesList = () => {
     setLoading(true);
     axios
       .post(
-        `${BASEURL}/company/create-company-checker`,
+        `${BASEURL}/hotel/create-hotel-checker`,
         {
           fullname: fullName,
           username: username,
@@ -144,7 +143,7 @@ const CompaniesList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -184,7 +183,7 @@ const CompaniesList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };

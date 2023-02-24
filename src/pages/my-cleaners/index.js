@@ -115,8 +115,7 @@ const Cleaners = () => {
     formData.append("password", CleanerPassword);
     formData.append("avatar", img);
     formData.append("roomCountForCleanEachDay", CleanerRoomCount);
-    formData.append("salaryPerRoom", SalaryPerRoom);
-
+    
     axios
       .post(`${BASEURL}/cleaner`, formData, {
         headers: {
@@ -139,7 +138,7 @@ const Cleaners = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -237,7 +236,7 @@ const Cleaners = () => {
               placeholder="User Name"
             />
           </div>
-          <div className="flex flex-col w-full gap-y-1">
+          {/* <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
               Cleaning Price per Room
             </label>
@@ -247,7 +246,7 @@ const Cleaners = () => {
               }}
               placeholder="Cleaning Price"
             />
-          </div>
+          </div> */}
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">Password</label>
             <Input.Password

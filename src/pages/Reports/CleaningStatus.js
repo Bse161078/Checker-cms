@@ -11,21 +11,7 @@ const CleaningStatus = () => {
   const [cleaner, setCleaner] = useState();
 
   const navigate = useNavigate();
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
-
+ 
   const columns = [
     {
       title: "No.",
@@ -54,22 +40,28 @@ const CleaningStatus = () => {
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "room");
         return (
           <ul>
-            {i?.cleaners?.map((el) => (
-              <span>{el?.fullname+" "}</span>
+            {i?.cleaners?.map((el, index) => (
+              <span>
+                {el?.fullname}
+                {index !== i.cleaners.length - 1 ? ", " : " "}
+              </span>
             ))}
           </ul>
         );
       },
+      
     },
     {
       title: "Room Details",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        return <a href="">Room Details</a>;
+        console.log('roomdetails',i)
+        return <Space onClick={()=>{
+          navigate("/room-details",{state:{cleanerRecord:i}})
+        }}>Room Details</Space>;
       },
     },
   ];

@@ -19,13 +19,19 @@ const Home = () => {
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [email, setEmail] = useState();
+  const [hEmail, setHEmail] = useState();
+  const [cEmail, setCEmail] = useState();
+
   const [CompanyfullName, setCompanyFullName] = useState();
   const [Companyusername, setCompanyUserName] = useState();
   const [Companypassword, setCompanyPassword] = useState();
   const [Companyemail, setCompanyEmail] = useState();
+  const [normalBed, setNormalBed] = useState();
+  const [childBed,setChildBed] = useState()
+
   const navigate = useNavigate();
   const columns = [
+    
     {
       title: "Username",
       dataIndex: "username",
@@ -81,7 +87,6 @@ const Home = () => {
         }, 1500);
       })
       .catch(function (error) {
-        console.log(error);
         toast.error(error.response.data.errors.title);
       });
   };
@@ -93,10 +98,11 @@ const Home = () => {
     formData.append("fullname", fullName);
     formData.append("username", username);
     formData.append("password", password);
-    formData.append("email", email);
-    formData.append("hotel_name", "Meriott");
+    formData.append("email", hEmail);
+    formData.append("company_email", cEmail);
     formData.append("avatar", img);
-
+    formData.append("hotel_name", hotelName);
+    formData.append("price", JSON.stringify({normal:1,extraAdult:normalBed,extraChild:childBed}));
     setLoading(true);
     axios
       .post(`${BASEURL}/hotel`, formData, {
@@ -120,7 +126,7 @@ const Home = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.message);
         setLoading(false);
       });
   };
@@ -158,7 +164,7 @@ const Home = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -166,7 +172,6 @@ const Home = () => {
     if (e.target.files.length !== 0) {
       setImg(e.target.files[0]);
     }
-    console.log(img, "Img");
   };
   const IsImLoggedIn = () => {
     axios
@@ -248,7 +253,7 @@ const Home = () => {
         <Table className="w-full" dataSource={users} columns={columns} />
       </section>
       <Modal
-        title="Create User"
+        title="Create Hotel"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -268,10 +273,10 @@ const Home = () => {
       >
         <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Full Name</label>
+            <label className="w-full text-left font-semibold">Hotel/Cleaning Company Name</label>
             <Input
               onChange={(e) => {
-                setFullName(e.target.value);
+                setHotelName(e.target.value);
               }}
               placeholder="jack grilish"
             />
@@ -286,11 +291,40 @@ const Home = () => {
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">User Name</label>
+            <label className="w-full text-left font-semibold">Full Name</label>
+            <Input
+              onChange={(e) => {
+                setFullName(e.target.value);
+              }}
+              placeholder="thisisjack"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Hotel Logo</label>
             <Input
               type="file"
               onChange={(e) => {
                 imgFilehandler(e);
+              }}
+              placeholder="103"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Extra Normal Bed Price</label>
+            <Input
+              type="text"
+              onChange={(e) => {
+                setNormalBed(e.target.value);
+              }}
+              placeholder="103"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Extra Child Bed Price</label>
+            <Input
+              type="text"
+              onChange={(e) => {
+                setChildBed(e.target.value);
               }}
               placeholder="103"
             />
@@ -308,10 +342,19 @@ const Home = () => {
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Email</label>
+            <label className="w-full text-left font-semibold">Hotel Email</label>
             <Input
               onChange={(e) => {
-                setEmail(e.target.value);
+                setHEmail(e.target.value);
+              }}
+              placeholder="sample@gmail.com"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Cleaning Company Email</label>
+            <Input
+              onChange={(e) => {
+                setCEmail(e.target.value);
               }}
               placeholder="sample@gmail.com"
             />

@@ -43,6 +43,7 @@ function App() {
         <Route path="/cleaner-dashboard" element={<CleanerDaashBoard />} />
         <Route path="/cleaner-time" element={<CleanerTime />} />
         <Route path="/room-details" element={<RoomDetails />} />
+        <Route path="/room-damages" element={<Damages />} />
 
         <Route path="/materials" element={<MaterialList />} />
         <Route path="/companycheckers" element={<MyCheckers />} />

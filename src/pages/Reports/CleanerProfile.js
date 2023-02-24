@@ -11,14 +11,13 @@ import { BASEURL } from "../../constants";
 
 const CleanerProfile = (props) => {
   const { state } = useLocation();
-  const {cleanerIndex} = state;
-  console.log("index", cleanerIndex);
+  const {cleanerRecord} = state;
   const navigate = useNavigate();
   const Token = localStorage.getItem("Token");
   const [cleaners,setCleaner] = useState();
-  const filteredRoomsCleaned = cleaners?.roomsReport?.reduce(
+  const filteredRoomsCleaned = cleanerRecord?.rooms?.reduce(
     (acc, obj) => {
-        if (obj.cleaning_status === "Cleaned"||"CLEANED") {
+        if (obj.cleaning_status === "Cleaned") {
           acc.push(obj);
         }
     
@@ -26,6 +25,19 @@ const CleanerProfile = (props) => {
     },
     []
   );
+  const filteredRoomsExtra = cleanerRecord?.rooms?.reduce(
+    (acc, obj) => {
+        if (obj.roomType.includes("extra")) {
+          acc.push(obj);
+        }
+    
+      return acc;
+    },
+    []
+  );
+console.log('cleaerRecord',cleanerRecord)
+const cleanedRoomsCount = cleanerRecord?.rooms.filter(room => room.cleaning_status === "Cleaned").length;
+
   const getReports = () => {
     
     axios
@@ -36,7 +48,6 @@ const CleanerProfile = (props) => {
       })
       .then((response) => {
         setCleaner(response.data.data.cleanersReport);
-        console.log("cleaners",cleaners)
       });
   };
   useEffect(() => {
@@ -57,13 +68,8 @@ const CleanerProfile = (props) => {
       dataIndex: "age",
       key: "age",
       render: (_, i, ind) => {
-        return (
-          <ul>
-            {i?.rooms?.map((el) => (
-              <span>{el?.name+" "}</span>
-            ))}
-          </ul>
-        );}
+        return <span>{i?.name}</span>;
+      },
     },
 
     {
@@ -72,7 +78,7 @@ const CleanerProfile = (props) => {
       key: "profile",
       render: (_, record) => (
         <Space size="middle"onClick={()=>{
-          navigate('/room-details')
+          navigate('/room-details',{state:{cleanerRecord:record}})
         }}>
           <a>Room Details</a>
         </Space>
@@ -87,8 +93,8 @@ const CleanerProfile = (props) => {
       <br />
       <div className="div" style={{ width: "80%" }}>
         <div style={{ textAlign: "center" }}>
-          <Avatar size={"large"} src={BASEURL+"/"+cleaners[cleanerIndex]?.avatar} />
-          <p className="text-md font-bold">{cleaners[cleanerIndex]?.fullname}</p>
+          <Avatar size={"large"} src={BASEURL+"/"+cleanerRecord?.avatar} />
+          <p className="text-md font-bold">{cleanerRecord?.fullname}</p>
           {/* <p className="text-md font-bold">
             <MailOutlined style={{ color: "#0BBBEF" }} /> hamzah@checker.com{" "}
             <PhoneOutlined style={{ color: "#0BBBEF" }} /> +971 55 9994444
@@ -100,20 +106,20 @@ const CleanerProfile = (props) => {
           <div class="w-full md:w-1/3 px-2">
             <div class="bgCard p-4">
               <div className=" text-lg font-bold ">
-                <div style={{ color: "#0BBBEF" }}>Room Cleaned</div>
+                <div style={{ color: "#0BBBEF" }}>Rooms Cleaned</div>
                 <br />
 
-                <p className="text-lg">{cleaners[cleanerIndex]?.rooms?.length}</p>
+                <p className="text-lg"> {cleanedRoomsCount}</p>
               </div>
             </div>
           </div>
           <div class="w-full md:w-1/3 px-2">
             <div class="bgCard p-4">
               <div className=" text-lg font-bold ">
-                <div style={{ color: "#0BBBEF" }}>Extras</div>
+                <div style={{ color: "#0BBBEF" }}>Extra Beds</div>
                 <br />
 
-                <p className="text-lg">12</p>
+                <p className="text-lg">{cleanerRecord?.extra}</p>
               </div>
             </div>
           </div>
@@ -123,7 +129,7 @@ const CleanerProfile = (props) => {
                 <div style={{ color: "#0BBBEF" }}>Mistakes</div>
                 <br />
 
-                <p className="text-lg">12</p>
+                <p className="text-lg">{cleanerRecord?.mistakesCount}</p>
               </div>
             </div>
           </div>
@@ -147,7 +153,7 @@ const CleanerProfile = (props) => {
 
             <Table
               className="w-full"
-              dataSource={filteredRoomsCleaned}
+              dataSource={filteredRoomsExtra}
               columns={columns}
             />
           </div>

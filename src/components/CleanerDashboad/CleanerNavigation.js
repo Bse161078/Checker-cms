@@ -35,8 +35,9 @@ export default function CleanerNavigation({ user }) {
                   <div className="flex items-center w-full justify-between">
                     <div className="flex-shrink-0">
                       <img
-                        style={{ padding: "30px" }}
+                        style={{ padding: "50px" }}
                         width={150}
+                        height={100}
                         src={BASEURL + "/" + user?.hotel?.avatar}
                         alt="The Checker App"
                       />

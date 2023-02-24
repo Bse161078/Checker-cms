@@ -20,10 +20,36 @@ const Rooms = () => {
   const [RoomTypes, SetRoomType] = useState();
   const [CleanerSalary, setCleanerSalary] = useState(0);
   const [Levels, setLevels] = useState();
-
+  const [user,setUser] = useState();
   const handleChange = (value) => {
     SetRoomType(value);
     console.log(roomType, "roomtype");
+  };
+  const extraAdultPrice = user?.price&&user.price.extraAdult; // retrieve the value of extraAdult price
+  const extraChildPrice = user?.price&&user.price.extraChild; // retrieve the value of extraChild price
+  
+  console.log(`Extra Adult Price: ${extraAdultPrice}`);
+  console.log(`Extra Child Price: ${extraChildPrice}`);
+
+  const IsImLoggedIn = () => {
+    axios
+      .get(`${BASEURL}/auth/check-login`, {
+        headers: {
+          Authorization: `Bearer ${Token}`,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.statusCode === 200 || 201) {
+          
+          // navigate("/");
+          setUser(response.data.data.user);
+        } else {
+          // navigate("/login");
+        }
+      })
+      .catch((err) => {
+        // navigate("/login");
+      });
   };
 
   const handleChanges = (value) => {
@@ -38,12 +64,23 @@ const Rooms = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Status",
+      title: "Occupation Status",
       key: "status",
-      dataIndex: "status",
-      render: (_, { status }) => (
+      dataIndex: "occupation_status",
+      render: (_, { occupation_status }) => (
         <>
-          <Tag color={"purple"}>{status || ""}</Tag>
+          <Tag color={"purple"}>{occupation_status || ""}</Tag>
+        </>
+      ),
+    },
+       
+    {
+      title: "Price",
+      key: "level",
+      dataIndex: "price",
+      render: (_, { price }) => (
+        <>
+          <a>{price}</a>
         </>
       ),
     },
@@ -63,7 +100,7 @@ const Rooms = () => {
       dataIndex: "roomType",
       render: (_, { roomType }) => (
         <>
-          <Tag color={"green"}>{roomType?.title}</Tag>
+          <Tag color={"green"}>{roomType}</Tag>
         </>
       ),
     },
@@ -80,36 +117,41 @@ const Rooms = () => {
           >
             Delete
           </button>
-          {/* <button
-              className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
-              onClick={() => {
-                setIsModalOpen(true);
-                setHotelID(_id);
-              }}
-            >
-              Create Checker
-            </button>
-            <button
-              className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
-              onClick={() => {
-                setIsCleanerModalOpen(true);
-              }}
-            >
-              Create Cleaner
-            </button>
-            <button
-              className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
-              onClick={() => {
-                setIsReceptionModalOpen(true)
-              }}
-            >
-              Create Reception
-            </button> */}
+        
         </Space>
       ),
     },
   ];
-
+  const extraColumn = [
+    {
+      title: "Extra Normal Bed Price",
+      dataIndex: "title",
+      key: "name",
+      render: () => <a>{extraAdultPrice}</a>,
+    },
+    {
+      title: "Extra Child Bed Price",
+      dataIndex: "title_de",
+      key: "name",
+      render: () => <a>{extraChildPrice}</a>,
+    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (_, { _id }) => (
+    //     <Space>
+    //       <button
+    //         className="bg-red-100 text-red-500 px-2 py-2 rounded-md"
+    //         onClick={() => {
+    //           handleDeletes(_id);
+    //         }}
+    //       >
+    //         Delete
+    //       </button>
+    //     </Space>
+    //   ),
+    // },
+  ];
   const column = [
     {
       title: "Name",
@@ -117,12 +159,12 @@ const Rooms = () => {
       key: "name",
       render: (text) => <a>{text}</a>,
     },
-    {
-      title: "German Name",
-      dataIndex: "title_de",
-      key: "name",
-      render: (text) => <a>{text}</a>,
-    },
+    // {
+    //   title: "German Name",
+    //   dataIndex: "title_de",
+    //   key: "name",
+    //   render: (text) => <a>{text}</a>,
+    // },
     {
       title: "Action",
       key: "action",
@@ -136,31 +178,8 @@ const Rooms = () => {
           >
             Delete
           </button>
-          {/* <button
-              className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
-              onClick={() => {
-                setIsModalOpen(true);
-                setHotelID(_id);
-              }}
-            >
-              Create Checker
-            </button>
-            <button
-              className="bg-blue-100 text-blue-500 px-2 py-2 rounded-md"
-              onClick={() => {
-                setIsCleanerModalOpen(true);
-              }}
-            >
-              Create Cleaner
-            </button>
-            <button
-              className="bg-yellow-100 text-yellow-500 px-2 py-2 rounded-md"
-              onClick={() => {
-                setIsReceptionModalOpen(true)
-              }}
-            >
-              Create Reception
-            </button> */}
+        
+            
         </Space>
       ),
     },
@@ -230,6 +249,7 @@ const Rooms = () => {
           name: RoomName,
           name_de: RoomNameDe,
           level: Levels,
+          price:CleanerSalary,
           hotel: localStorage.getItem("HotelID"),
         },
         {
@@ -255,7 +275,7 @@ const Rooms = () => {
       })
       .catch((err) => {
         console.log("error", err);
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -268,7 +288,7 @@ const Rooms = () => {
         {
           title: RoomTypeName,
           title_de: RoomTypeNameDe,
-          price: CleanerSalary,
+          // price: CleanerSalary,
         },
         {
           headers: {
@@ -292,7 +312,7 @@ const Rooms = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -301,6 +321,7 @@ const Rooms = () => {
     getrooms();
     getRoomType();
     getLevel();
+    IsImLoggedIn();
   }, []);
 
   const handleCancel = () => {
@@ -373,7 +394,7 @@ const Rooms = () => {
         className="flex flex-col justify-start items-start my-10 gap-y-4"
       >
         <div className="w-full flex justify-between items-center">
-          <h2 className="text-2xl text-black font-medium">Rooms List</h2>
+          <h2 className="text-2xl text-black font-medium">Rooms Type List</h2>
           <div className="flex justify-center items-center gap-x-4">
             <button
               onClick={() => setIsRoomTypeModalOpen(true)}
@@ -384,6 +405,17 @@ const Rooms = () => {
           </div>
         </div>
         <Table className="w-full" dataSource={roomType} columns={column} />
+      </section>
+        <section
+        style={{ width: "1200px" }}
+        className="flex flex-col justify-start items-start my-10 gap-y-4"
+      >
+        <div className="w-full flex justify-between items-center">
+          <h2 className="text-2xl text-black font-medium">Extra Beds</h2>
+          <div className="flex justify-center items-center gap-x-4">
+          </div>
+        </div>
+        {extraAdultPrice&&extraChildPrice&&<Table className="w-full" dataSource={roomType}  columns={extraColumn} />}
       </section>
       <Modal
         title="Create Room "
@@ -405,7 +437,7 @@ const Rooms = () => {
       >
         <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="flex flex-col w-full gap-y-1">
-            <label className="w-full text-left font-semibold">Room Name</label>
+            <label className="w-full text-left font-semibold">Room #</label>
             <Input
               onChange={(e) => {
                 setRoomName(e.target.value);
@@ -415,7 +447,7 @@ const Rooms = () => {
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
-              Room Name Germany
+              Room # Germany
             </label>
             <Input
               onChange={(e) => {
@@ -423,6 +455,23 @@ const Rooms = () => {
               }}
               placeholder="(optional)"
             />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">
+              Cleaning Price Per Room
+            </label>
+            <Input
+                type="number"
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  if (/^\d+$/.test(value)) {
+                    setCleanerSalary(parseInt(value));
+                  }
+                }}
+              />
+
+
           </div>
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
@@ -479,7 +528,7 @@ const Rooms = () => {
               onChange={(e) => {
                 setRoomTypeName(e.target.value);
               }}
-              placeholder="103"
+              placeholder="Single"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
@@ -493,7 +542,7 @@ const Rooms = () => {
               placeholder="(optional)"
             />
           </div>
-          <div className="flex flex-col w-full gap-y-1">
+          {/* <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
               Cleaning Price Per Room
             </label>
@@ -502,7 +551,7 @@ const Rooms = () => {
                 setCleanerSalary(e.target.value);
               }}
             />
-          </div>
+          </div> */}
         </div>
       </Modal>
     </div>

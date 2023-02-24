@@ -9,14 +9,18 @@ import { BASEURL } from "../../constants";
 const { TabPane } = Tabs;
 
 function callback(key) {
-  console.log(key);
+  console.log(key,"key");
 }
+
+
 
 const Reports = () => {
   const { token } = theme.useToken();
   const Token = localStorage.getItem("Token");
   const [cleaner, setCleaner] = useState();
-
+  const totalConversions = cleaner?.roomsReport?.map((room)=>{
+    return room?.price || 0;
+  }).reduce((total, price) => total + price, 0);
   const navigate = useNavigate();
   
   const columns = [
@@ -37,26 +41,35 @@ const Reports = () => {
       },
     },
     {
-      title: "Room Cleaned",
+      title: "Rooms Status",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        return <span>{i?.rooms?.length}</span>;
+        const filteredRooms = i?.rooms.filter((room) => room?.cleaning_status);
+        return (
+          <span>
+            {filteredRooms?.map((room, index) => (
+              <p key={index}>{room.cleaning_status}</p>
+            ))}
+          </span>
+        );
       },
     },
     {
-      title: "Extra",
+      title: "Extra Beds",
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
-        return <span>{i?.rooms?.length}</span>;
+        return <span>{i?.extra}</span>;
       },
     },
     {
       title: "Mistakes",
       dataIndex: "address",
       key: "address",
+      render: (_, i, ind) => {
+        return <span>{i?.mistakesCount}</span>;
+      },
     },
     {
       title: "",
@@ -66,7 +79,7 @@ const Reports = () => {
         
         <Space size="middle" onClick={()=>{
           
-          navigate(`/cleaner-profile`,{state:{cleanerIndex:index}})
+          navigate(`/cleaner-profile`,{state:{cleanerRecord:record}})
         }}>
           <a>View Profile</a>
         </Space>
@@ -74,6 +87,7 @@ const Reports = () => {
       ),
     },
   ];
+  console.log('cleaners',cleaner)
   const getReports = () => {
     axios
       .get(`${BASEURL}/room/report`, {
@@ -101,12 +115,13 @@ const Reports = () => {
         onChange={callback}
         type="card"
       >
-        <TabPane tab="Today" key="1">
+        <TabPane tab="Report" key="1">
           <Card>
             <div class="container mx-auto">
               <div class="flex flex-wrap -mx-1">
                 <div
                   class="w-full md:w-1/3 px-2"
+                  style={{cursor:'pointer'}}
                   onClick={() => navigate("/CleanersUsed")}
                 >
                   <div class="bgCard p-4">
@@ -117,6 +132,7 @@ const Reports = () => {
                 <div class="w-full md:w-1/3 px-2">
                   <div
                     class="bgCard p-4"
+                    style={{cursor:'pointer'}}
                     onClick={() => {
                       navigate("/roomCleaned");
                     }}
@@ -128,12 +144,13 @@ const Reports = () => {
                 <div class="w-full md:w-1/3 px-2">
                   <div
                     class="bgCard p-4"
+                     style={{cursor:'pointer'}}
                     onClick={() => {
-                      navigate("/conversationRates");
+                       navigate("/conversationRates");
                     }}
                   >
-                    <p className="fs-bl-20">Conversions</p>
-                    <h4>29 </h4>
+                    <p className="fs-bl-20">Total Cost</p>
+                    <h4>{totalConversions} </h4>
                   </div>
                 </div>
               </div>
@@ -145,6 +162,7 @@ const Reports = () => {
                   <br />
                   <div
                     class="bgCard p-4"
+                    style={{cursor:'pointer'}}
                     onClick={() => navigate("/cleaningStatus")}
                   >
                     <div className="flex text-lg text-green-500 font-bold ">
@@ -179,8 +197,12 @@ const Reports = () => {
                     </div>
                   </div>
                 </div>
-                <div class="w-full md:w-1/2 px-2">
-                  <p className="font-bold  text-lg">Rooms: Damages</p>
+                <div class="w-full md:w-1/2 px-2" style={{cursor:'pointer'}} onClick={()=>{
+                    navigate("/room-damages",{state:{roomReport:cleaner}})
+                  }}>
+                  <p className="font-bold  text-lg"
+                  
+                  >Rooms: Damages</p>
                   <br />
                   <div class="bgCard p-4">
                     <div className="flex text-lg text-green-500 font-bold ">
@@ -203,7 +225,6 @@ const Reports = () => {
                         style={{ height: "40px" }}
                       />
                     </div>
-                    <p className="text-right">Number of rooms</p>
                   </div>
                 </div>
               </div>
@@ -213,12 +234,10 @@ const Reports = () => {
             </div>
           </Card>
         </TabPane>
-        <TabPane tab="This week" key="2">
-          Content of Tab 2
+        {/* <TabPane tab="This week" key="2">
         </TabPane>
         <TabPane tab="This Month" key="3">
-          Content of Tab 3
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   );

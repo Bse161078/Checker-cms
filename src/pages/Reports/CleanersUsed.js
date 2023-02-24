@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import Navigation from "../../components/Navigation";
 import { BASEURL } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 const CleanersUsed = () => {
   const [cleaner, setCleaner] = useState();
-
+  const navigate = useNavigate();
   const dataSource = [
     {
       key: "1",
@@ -63,7 +64,6 @@ const CleanersUsed = () => {
       dataIndex: "address",
       key: "address",
       render: (_, i, ind) => {
-        console.log(i, "sd");
         return (
           <ul>
             {i?.rooms?.map((el, ind) => (
@@ -75,6 +75,19 @@ const CleanersUsed = () => {
           </ul>
         );
       },
+      
+    },
+    {
+      title: "Room Details",
+      dataIndex: "profile",
+      key: "profile",
+      render: (_, record) => (
+        <Space size="middle" onClick={()=>{
+          navigate('/cleaner-profile',{state:{cleanerRecord:record}})
+        }}>
+          <a>View Profile</a>
+        </Space>
+      ),
     },
   ];
   return (

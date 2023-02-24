@@ -87,13 +87,15 @@ const MyCheckers = () => {
     formData.append("username", CleanerUsername);
     formData.append("password", CleanerPassword);
     formData.append("avatar", img);
+    formData.append("hotel", localStorage.getItem("HotelID"));
+
     // formData.append("hotelID", localStorage.getItem("hotelID"));
 
     // formData.append("salaryPerRoom", CleanerSalary);
     // formData.append("roomCountForCleanEachDay", CleanerRoomCount);
 
     axios
-      .post(`${BASEURL}/checker`, formData, {
+      .post(`${BASEURL}/hotel/create-hotel-checker`, formData, {
         headers: {
           Authorization: `Bearer ${Token}`,
         },
@@ -114,7 +116,7 @@ const MyCheckers = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -158,7 +160,7 @@ const MyCheckers = () => {
             }}
             className="bg-blue-400 text-white rounded-lg shadow-inner text-lg px-4 py-2 hover:text-black delay-100 hover:shadow-lg"
           >
-            Create Checkers
+            Create Checker
           </button>
         </div>
         <Table

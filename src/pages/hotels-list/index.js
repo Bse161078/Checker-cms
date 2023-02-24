@@ -66,6 +66,12 @@ const HotelsList = () => {
   };
   const columns = [
     {
+      title: "Hotel/Cleaning Company Name",
+      dataIndex: "fullname",
+      key: "username",
+      render: (text) => <a>{text?text:"NA"}</a>,
+    },
+    {
       title: "Username",
       dataIndex: "username",
       key: "username",
@@ -95,7 +101,7 @@ const HotelsList = () => {
           >
             Delete
           </button>
-          <button
+          {/* <button
             className="bg-green-100 text-green-500 px-2 py-2 rounded-md"
             onClick={() => {
               setIsModalOpen(true);
@@ -120,7 +126,7 @@ const HotelsList = () => {
             }}
           >
             Create Reception
-          </button>
+          </button> */}
           {/* <button
             style={{ backgroundColor: "rgb(226 204 181)", color: "#964B00" }}
             className="   px-2 py-2 rounded-md"
@@ -194,7 +200,7 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -209,7 +215,7 @@ const HotelsList = () => {
     formData.append("avatar", img);
     formData.append("roomCountForCleanEachDay", CleanerRoomCount);
     formData.append("hotelID", hotelID);
-    formData.append("salaryPerRoom", CleanerRoomCount);
+    //formData.append("salaryPerRoom", 88);
 
     axios
       .post(`${BASEURL}/hotel/create-hotel-cleaner`, formData, {
@@ -233,7 +239,7 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -276,7 +282,7 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -315,7 +321,8 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        console.log("eror",err)
+        toast.error(err?.response?.data?.errors?.title);
         setLoading(false);
       });
   };
@@ -341,6 +348,7 @@ const HotelsList = () => {
         },
       })
       .then((response) => {
+        console.log('users',response?.data?.data?.hotels)
         setUsers(response?.data?.data?.hotels);
       });
   };
@@ -502,7 +510,7 @@ const HotelsList = () => {
               }
             />
           </div>
-          <div className="flex flex-col w-full gap-y-1">
+          {/* <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
               Cleaning Price Per Room
             </label>
@@ -515,7 +523,7 @@ const HotelsList = () => {
                 setCleanerSalary(e.target.value);
               }}
             />
-          </div>
+          </div> */}
           <div className="flex flex-col w-full gap-y-1">
             <label className="w-full text-left font-semibold">
               Rooms He Should Clean Per Day
