@@ -275,7 +275,7 @@ const Rooms = () => {
       })
       .catch((err) => {
         console.log("error", err);
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };
@@ -312,7 +312,7 @@ const Rooms = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };

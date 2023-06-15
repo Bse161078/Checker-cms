@@ -122,7 +122,8 @@ const Receptions = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        console.log("eror",err)
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };

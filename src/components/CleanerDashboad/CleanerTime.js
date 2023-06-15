@@ -65,7 +65,7 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         // setLoading(false);
       });
   };
@@ -97,7 +97,7 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         // setLoading(false);
       });
   };
@@ -131,7 +131,7 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         // setLoading(false);
       });
   };
@@ -164,7 +164,7 @@ const CleanerTime = () => {
         });
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         // setLoading(false);
       });
   };

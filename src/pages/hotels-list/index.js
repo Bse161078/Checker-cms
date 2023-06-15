@@ -200,7 +200,7 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };
@@ -239,7 +239,7 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };
@@ -282,7 +282,7 @@ const HotelsList = () => {
         }, 1500);
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };
@@ -322,7 +322,7 @@ const HotelsList = () => {
       })
       .catch((err) => {
         console.log("eror",err)
-        toast.error(err?.response?.data?.errors?.title);
+        toast.error(err?.response?.data?.errors?.message?err.response.data.errors.message:err.response.data.errors.title);
         setLoading(false);
       });
   };
