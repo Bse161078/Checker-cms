@@ -15,6 +15,7 @@ const Receptions = () => {
   const [fullName, setFullName] = useState();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [hotel,setHotel] = useState();
   const [img, setImg] = useState();
 
   const imgFilehandler = (e) => {
@@ -97,6 +98,8 @@ const Receptions = () => {
     formData.append("fullname", fullName);
     formData.append("username", username);
     formData.append("password", password);
+    formData.append("hotel", hotel);
+
     // formData.append("hotel", localStorage.getItem("HotelID"));
     // formData.append("logo", img);
     setLoading(true);
@@ -221,7 +224,7 @@ const Receptions = () => {
               onChange={(e) => {
                 setFullName(e.target.value);
               }}
-              placeholder="sample sample"
+              placeholder="Full Name"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
@@ -231,7 +234,7 @@ const Receptions = () => {
               onChange={(e) => {
                 setUserName(e.target.value);
               }}
-              placeholder="sample"
+              placeholder="UserName"
             />
           </div>
           <div className="flex flex-col w-full gap-y-1">
@@ -241,7 +244,17 @@ const Receptions = () => {
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
-              placeholder="103"
+              placeholder="Password"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-1">
+            <label className="w-full text-left font-semibold">Hotel</label>
+            <Input
+              minLength={8}
+              onChange={(e) => {
+                setHotel(e.target.value);
+              }}
+              placeholder="hotelName"
             />
           </div>
           {/* <div className="flex flex-col w-full gap-y-1">

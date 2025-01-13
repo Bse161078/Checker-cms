@@ -11,7 +11,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const LoginHandler = (values) => {
-    debugger;
     axios
       .post(`${BASEURL}/auth/login`, {
         username: values.username,
@@ -44,7 +43,7 @@ const Login = () => {
       })
       .catch((err) => {
         console.log("error",err)
-        toast.error(err?.response?.data?.errors?.message);
+        toast.error(err?.message);
         setLoading(false);
       });
   };

@@ -1,1 +1,1 @@
-export const BASEURL = 'https://the-checkerapp.com:3000' 
+export const BASEURL = 'https://backend.the-checker.app' 
